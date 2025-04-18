@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>日语50音图 - 带发音功能</title>
+    <style>
+        body {
+            font-family: 'Meiryo', 'MS Gothic', sans-serif;
+            max-width: 800px;
+            margin: 0 auto;
+            padding: 20px;
+            background-color: #f5f5f5;
+        }
+        h1 {
+            color: #333;
+            text-align: center;
+            margin-bottom: 30px;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 30px;
+            background-color: white;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: center;
+            font-size: 24px;
+        }
+        th {
+            background-color: #f2f2f2;
+            font-weight: bold;
+        }
+        td {
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+        td:hover {
+            background-color: #e6f7ff;
+        }
+        .romaji {
+            font-size: 12px;
+            color: #666;
+            display: block;
+            margin-top: 5px;
+        }
+        .section-title {
+            margin-top: 30px;
+            color: #444;
+            border-bottom: 2px solid #ddd;
+            padding-bottom: 5px;
+        }
+        .notes {
+            background-color: #fffde7;
+            padding: 15px;
+            border-radius: 5px;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <h1>日本語50音図</h1>
+    
+    <h2 class="section-title">清音 (Seion)</h2>
+    <table id="seion-table">
+        <tr>
+            <th></th>
+            <th>あ段</th>
+            <th>い段</th>
+            <th>う段</th>
+            <th>え段</th>
+            <th>お段</th>
+        </tr>
+        <tr>
+            <th>あ行</th>
+            <td onclick="playSound('a')">あ<span class="romaji">a</span></td>
+            <td onclick="playSound('i')">い<span class="romaji">i</span></td>
+            <td onclick="playSound('u')">う<span class="romaji">u</span></td>
+            <td onclick="playSound('e')">え<span class="romaji">e</span></td>
+            <td onclick="playSound('o')">お<span class="romaji">o</span></td>
+        </tr>
+        <tr>
+            <th>か行</th>
+            <td onclick="playSound('ka')">か<span class="romaji">ka</span></td>
+            <td onclick="playSound('ki')">き<span class="romaji">ki</span></td>
+            <td onclick="playSound('ku')">く<span class="romaji">ku</span></td>
+            <td onclick="playSound('ke')">け<span class="romaji">ke</span></td>
+            <td onclick="playSound('ko')">こ<span class="romaji">ko</span></td>
+        </tr>
+        <tr>
+            <th>さ行</th>
+            <td onclick="playSound('sa')">さ<span class="romaji">sa</span></td>
+            <td onclick="playSound('shi')">し<span class="romaji">shi</span></td>
+            <td onclick="playSound('su')">す<span class="romaji">su</span></td>
+            <td onclick="playSound('se')">せ<span class="romaji">se</span></td>
+            <td onclick="playSound('so')">そ<span class="romaji">so</span></td>
+        </tr>
+        <tr>
+            <th>た行</th>
+            <td onclick="playSound('ta')">た<span class="romaji">ta</span></td>
+            <td onclick="playSound('chi')">ち<span class="romaji">chi</span></td>
+            <td onclick="playSound('tsu')">つ<span class="romaji">tsu</span></td>
+            <td onclick="playSound('te')">て<span class="romaji">te</span></td>
+            <td onclick="playSound('to')">と<span class="romaji">to</span></td>
+        </tr>
+        <tr>
+            <th>な行</th>
+            <td onclick="playSound('na')">な<span class="romaji">na</span></td>
+            <td onclick="playSound('ni')">に<span class="romaji">ni</span></td>
+            <td onclick="playSound('nu')">ぬ<span class="romaji">nu</span></td>
+            <td onclick="playSound('ne')">ね<span class="romaji">ne</span></td>
+            <td onclick="playSound('no')">の<span class="romaji">no</span></td>
+        </tr>
+        <tr>
+            <th>は行</th>
+            <td onclick="playSound('ha')">は<span class="romaji">ha</span></td>
+            <td onclick="playSound('hi')">ひ<span class="romaji">hi</span></td>
+            <td onclick="playSound('fu')">ふ<span class="romaji">fu</span></td>
+            <td onclick="playSound('he')">へ<span class="romaji">he</span></td>
+            <td onclick="playSound('ho')">ほ<span class="romaji">ho</span></td>
+        </tr>
+        <tr>
+            <th>ま行</th>
+            <td onclick="playSound('ma')">ま<span class="romaji">ma</span></td>
+            <td onclick="playSound('mi')">み<span class="romaji">mi</span></td>
+            <td onclick="playSound('mu')">む<span class="romaji">mu</span></td>
+            <td onclick="playSound('me')">め<span class="romaji">me</span></td>
+            <td onclick="playSound('mo')">も<span class="romaji">mo</span></td>
+        </tr>
+        <tr>
+            <th>や行</th>
+            <td onclick="playSound('ya')">や<span class="romaji">ya</span></td>
+            <td></td>
+            <td onclick="playSound('yu')">ゆ<span class="romaji">yu</span></td>
+            <td></td>
+            <td onclick="playSound('yo')">よ<span class="romaji">yo</span></td>
+        </tr>
+        <tr>
+            <th>ら行</th>
+            <td onclick="playSound('ra')">ら<span class="romaji">ra</span></td>
+            <td onclick="playSound('ri')">り<span class="romaji">ri</span></td>
+            <td onclick="playSound('ru')">る<span class="romaji">ru</span></td>
+            <td onclick="playSound('re')">れ<span class="romaji">re</span></td>
+            <td onclick="playSound('ro')">ろ<span class="romaji">ro</span></td>
+        </tr>
+        <tr>
+            <th>わ行</th>
+            <td onclick="playSound('wa')">わ<span class="romaji">wa</span></td>
+            <td></td>
+            <td></td>
+            <td></td>
+            <td onclick="playSound('wo')">を<span class="romaji">wo</span></td>
+        </tr>
+        <tr>
+            <th>ん</th>
+            <td colspan="5" onclick="playSound('n')">ん<span class="romaji">n</span></td>
+        </tr>
+    </table>
+
+    <h2 class="section-title">濁音 (Dakuon)</h2>
+    <table id="dakuon-table">
+        <tr>
+            <th></th>
+            <th>あ段</th>
+            <th>い段</th>
+            <th>う段</th>
+            <th>え段</th>
+            <th>お段</th>
+        </tr>
+        <tr>
+            <th>が行</th>
+            <td onclick="playSound('ga')">が<span class="romaji">ga</span></td>
+            <td onclick="playSound('gi')">ぎ<span class="romaji">gi</span></td>
+            <td onclick="playSound('gu')">ぐ<span class="romaji">gu</span></td>
+            <td onclick="playSound('ge')">げ<span class="romaji">ge</span></td>
+            <td onclick="playSound('go')">ご<span class="romaji">go</span></td>
+        </tr>
+        <tr>
+            <th>ざ行</th>
+            <td onclick="playSound('za')">ざ<span class="romaji">za</span></td>
+            <td onclick="playSound('ji')">じ<span class="romaji">ji</span></td>
+            <td onclick="playSound('zu')">ず<span class="romaji">zu</span></td>
+            <td onclick="playSound('ze')">ぜ<span class="romaji">ze</span></td>
+            <td onclick="playSound('zo')">ぞ<span class="romaji">zo</span></td>
+        </tr>
+        <tr>
+            <th>だ行</th>
+            <td onclick="playSound('da')">だ<span class="romaji">da</span></td>
+            <td onclick="playSound('ji')">ぢ<span class="romaji">ji</span></td>
+            <td onclick="playSound('zu')">づ<span class="romaji">zu</span></td>
+            <td onclick="playSound('de')">で<span class="romaji">de</span></td>
+            <td onclick="playSound('do')">ど<span class="romaji">do</span></td>
+        </tr>
+        <tr>
+            <th>ば行</th>
+            <td onclick="playSound('ba')">ば<span class="romaji">ba</span></td>
+            <td onclick="playSound('bi')">び<span class="romaji">bi</span></td>
+            <td onclick="playSound('bu')">ぶ<span class="romaji">bu</span></td>
+            <td onclick="playSound('be')">べ<span class="romaji">be</span></td>
+            <td onclick="playSound('bo')">ぼ<span class="romaji">bo</span></td>
+        </tr>
+    </table>
+
+    <h2 class="section-title">半濁音 (Handakuon)</h2>
+    <table id="handakuon-table">
+        <tr>
+            <th></th>
+            <th>あ段</th>
+            <th>い段</th>
+            <th>う段</th>
+            <th>え段</th>
+            <th>お段</th>
+        </tr>
+        <tr>
+            <th>ぱ行</th>
+            <td onclick="playSound('pa')">ぱ<span class="romaji">pa</span></td>
+            <td onclick="playSound('pi')">ぴ<span class="romaji">pi</span></td>
+            <td onclick="playSound('pu')">ぷ<span class="romaji">pu</span></td>
+            <td onclick="playSound('pe')">ぺ<span class="romaji">pe</span></td>
+            <td onclick="playSound('po')">ぽ<span class="romaji">po</span></td>
+        </tr>
+    </table>
+
+    <h2 class="section-title">拗音 (Youon)</h2>
+    <table id="youon-table">
+        <tr>
+            <th></th>
+            <th>や</th>
+            <th>ゆ</th>
+            <th>よ</th>
+        </tr>
+        <tr>
+            <th>き</th>
+            <td onclick="playSound('kya')">きゃ<span class="romaji">kya</span></td>
+            <td onclick="playSound('kyu')">きゅ<span class="romaji">kyu</span></td>
+            <td onclick="playSound('kyo')">きょ<span class="romaji">kyo</span></td>
+        </tr>
+        <tr>
+            <th>し</th>
+            <td onclick="playSound('sha')">しゃ<span class="romaji">sha</span></td>
+            <td onclick="playSound('shu')">しゅ<span class="romaji">shu</span></td>
+            <td onclick="playSound('sho')">しょ<span class="romaji">sho</span></td>
+        </tr>
+        <tr>
+            <th>ち</th>
+            <td onclick="playSound('cha')">ちゃ<span class="romaji">cha</span></td>
+            <td onclick="playSound('chu')">ちゅ<span class="romaji">chu</span></td>
+            <td onclick="playSound('cho')">ちょ<span class="romaji">cho</span></td>
+        </tr>
+        <tr>
+            <th>に</th>
+            <td onclick="playSound('nya')">にゃ<span class="romaji">nya</span></td>
+            <td onclick="playSound('nyu')">にゅ<span class="romaji">nyu</span></td>
+            <td onclick="playSound('nyo')">にょ<span class="romaji">nyo</span></td>
+        </tr>
+        <tr>
+            <th>ひ</th>
+            <td onclick="playSound('hya')">ひゃ<span class="romaji">hya</span></td>
+            <td onclick="playSound('hyu')">ひゅ<span class="romaji">hyu</span></td>
+            <td onclick="playSound('hyo')">ひょ<span class="romaji">hyo</span></td>
+        </tr>
+        <tr>
+            <th>み</th>
+            <td onclick="playSound('mya')">みゃ<span class="romaji">mya</span></td>
+            <td onclick="playSound('myu')">みゅ<span class="romaji">myu</span></td>
+            <td onclick="playSound('myo')">みょ<span class="romaji">myo</span></td>
+        </tr>
+        <tr>
+            <th>り</th>
+            <td onclick="playSound('rya')">りゃ<span class="romaji">rya</span></td>
+            <td onclick="playSound('ryu')">りゅ<span class="romaji">ryu</span></td>
+            <td onclick="playSound('ryo')">りょ<span class="romaji">ryo</span></td>
+        </tr>
+        <tr>
+            <th>ぎ</th>
+            <td onclick="playSound('gya')">ぎゃ<span class="romaji">gya</span></td>
+            <td onclick="playSound('gyu')">ぎゅ<span class="romaji">gyu</span></td>
+            <td onclick="playSound('gyo')">ぎょ<span class="romaji">gyo</span></td>
+        </tr>
+        <tr>
+            <th>じ</th>
+            <td onclick="playSound('ja')">じゃ<span class="romaji">ja</span></td>
+            <td onclick="playSound('ju')">じゅ<span class="romaji">ju</span></td>
+            <td onclick="playSound('jo')">じょ<span class="romaji">jo</span></td>
+        </tr>
+        <tr>
+            <th>び</th>
+            <td onclick="playSound('bya')">びゃ<span class="romaji">bya</span></td>
+            <td onclick="playSound('byu')">びゅ<span class="romaji">byu</span></td>
+            <td onclick="playSound('byo')">びょ<span class="romaji">byo</span></td>
+        </tr>
+        <tr>
+            <th>ぴ</th>
+            <td onclick="playSound('pya')">ぴゃ<span class="romaji">pya</span></td>
+            <td onclick="playSound('pyu')">ぴゅ<span class="romaji">pyu</span></td>
+            <td onclick="playSound('pyo')">ぴょ<span class="romaji">pyo</span></td>
+        </tr>
+    </table>
+
+    <div class="notes">
+        <h3>使用说明</h3>
+        <p>点击表格中的假名即可听到发音。发音使用的是浏览器内置的语音合成功能。</p>
+        <p>注意：部分浏览器可能需要用户先与页面交互（如点击任意位置）后才能播放声音。</p>
+    </div>
+
+    <script>
+        // 语音合成函数
+        function playSound(kana) {
+            // 检查浏览器是否支持语音合成
+            if (!window.speechSynthesis) {
+                alert("您的浏览器不支持语音合成功能，请使用Chrome、Edge或Firefox等现代浏览器。");
+                return;
+            }
+            
+            // 创建语音合成实例
+            const utterance = new SpeechSynthesisUtterance();
+            
+            // 设置发音文本
+            utterance.text = kana;
+            
+            // 设置为日语发音
+            utterance.lang = 'ja-JP';
+            
+            // 设置语速和音调
+            utterance.rate = 0.8;
