@@ -1,72 +1,109 @@
 <!DOCTYPE html>
-<html>
+<html lang="zh-CN">
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width">
-  <title>网址导航</title>
-  <!-- 界面小图标 -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>网址导航 - 首页</title>
   <link rel="icon" href="./res/logo.png" sizes="16x16">
-
+  <style>
+    body {
+        background-color:#ffffff;
+        margin: 0;
+        padding: 20px;
+        font-family: "Microsoft YaHei", "幼圆", YouYuan, sans-serif;
+        text-align: center;
+    }
+    
+    .header {
+        margin-bottom: 30px;
+    }
+    
+    .section-title {
+        background-color:#fcfcfc;
+        padding: 10px;
+        display: inline-block;
+        border-radius: 5px;
+    }
+    
+    .nav-container {
+        max-width: 1000px;
+        margin: 0 auto;
+        padding: 20px;
+    }
+    
+    .nav-links {
+        margin: 30px 0;
+    }
+    
+    .nav-link {
+        font-size: 16px;
+        padding: 8px 25px;
+        margin: 8px;
+        border: 2px solid #f0f0f0;
+        border-radius: 15px;
+        text-decoration: none;
+        display: inline-block;
+        transition: all 0.2s ease;
+    }
+    
+    .nav-link:link    {color:#000000;}
+    .nav-link:visited {color:#dd1ce4;}
+    .nav-link:hover   {
+        color:#0000FF;
+        border-color: #d0e8ff;
+        transform: translateY(-2px);
+    }
+    .nav-link:active  {color:#FF0000;}
+    
+    .browser-info {
+        margin-top: 40px;
+        padding: 15px;
+        background-color: #f8f8f8;
+        border-radius: 5px;
+        display: inline-block;
+    }
+    
+    .footer {
+        margin-top: 30px;
+        color: #666;
+        font-size: 14px;
+    }
+    
+    .japanese-link {
+        background-color: #f0f9ff;
+        border-color: #bae0ff;
+    }
+  </style>
 </head>
 
-<style>
-    body
-    {
-        background-color:#ffffff00;
-    }
-    p
-    {
-        background-color:#fcfcfc;
-    }
-    h1
-    {
-        font-size:100%;
-        background-color:#ffffff;
-        font-family: "幼圆", YouYuan;
-    }
-    a
-    {
-        font-size:125%;
-        /* margin:0 8px;*/
-        padding:0 50px;
-        /*display: block;*/
-        border: 2px solid rgb(255, 255, 255);
-        border-radius: 15px;
-        font-family: "Arial", sans-serif;
-    }
-    a:link    {color:#000000;text-decoration: none;}   /* 未访问链接*/
-    a:visited {color:#dd1ce4;text-decoration: none;}  /* 已访问链接 */
-    a:hover   {color:#0000FF;}  /* 鼠标移动到链接上 */
-    a:active  {color:#FF0000;}  /* 鼠标点击时 */
-
-    /* .jz{width:1000px; margin:0 auto;text-align:center;}  */
-</style>
-
 <body>
-<p align="center">快捷功能</p>
-<h1 align="center">列表</h1>
- <!-- _blank：新标签页
+  <div class="header">
+    <h1>网址导航</h1>
+    <div class="section-title">快捷功能</div>
+  </div>
+  <!-- _blank：新标签页
       _self ：自身打开
--->
-<a href="https://cn.bing.com" target="_blank">必应</a>
-<a href="https://www.baidu.com" target="_blank">百度</a>
-<a href="https://github.com/" target="_blank">GitHub</a>
-<a href="https://gitee.com/" target="_blank">Gitee</a>
-<a href="https://mail.qq.com/" target="_blank">QQ邮箱</a>
-<a href="https://mail.163.com/" target="_blank">163邮箱</a>
-<a href="https://ntmail.global-mail.cn/webmail/login.php?msg=login" target="_blank">吉林航盛SSL-邮箱</a>
-<a href="https://map.amap.com/subway/index.html?&4403" target="_blank">深圳地铁图(高德)</a>
-<a href="https://www.ithome.com/" target="_blank">IT之家</a>
-
-<a href="riyu.html" target="_blank">日语学习</a>
-
-<!-- <button type="button" onclick="alert('你好，世界!')">点我!</button> -->
-
-<br></br>
-<b align="center">下面是当前使用的浏览器信息：</b>
-<br><b><script>document.write(navigator.userAgent);</script></b></br>
-<!--<button type="button" </button>按钮</button> -->
-<!-- <div class="jz">要放入的文字<div></div> -->
-<div style="position:fixed; bottom:0px; width:100%; text-align:center;">V1.0</div>
+  -->
+  <div class="nav-container">
+    <div class="nav-links">
+      <a href="https://cn.bing.com" target="_blank" class="nav-link">必应</a>
+      <a href="https://www.baidu.com" target="_blank" class="nav-link">百度</a>
+      <a href="https://github.com/" target="_blank" class="nav-link">GitHub</a>
+      <a href="https://gitee.com/" target="_blank" class="nav-link">Gitee</a>
+      <a href="https://mail.qq.com/" target="_blank" class="nav-link">QQ邮箱</a>
+      <a href="https://mail.163.com/" target="_blank" class="nav-link">163邮箱</a>
+      <a href="http://webmail.hanosonic.com/webmail/login.php?msg=login" target="_blank" class="nav-link">吉林航盛SSL-邮箱</a>
+      <a href="https://map.amap.com/subway/index.html?&4403" target="_blank" class="nav-link">深圳地铁图(高德)</a>
+      <a href="https://www.ithome.com/" target="_blank" class="nav-link">IT之家</a>
+      <a href="riyu.html" target="_self" class="nav-link japanese-link">日语学习</a>
+    </div>
+    
+    <div class="browser-info">
+      <b>当前使用的浏览器信息：</b><br>
+      <script>document.write(navigator.userAgent);</script>
+    </div>
+  </div>
+  
+  <div class="footer">V1.2</div>
 </body>
 </html>
