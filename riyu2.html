@@ -3,15 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>日语五十音图（完整版）</title>
+    <title>日语五十音图（整合版）</title>
     <style>
         body {
             font-family: Arial, sans-serif;
             line-height: 1.6;
             margin: 20px;
+            color: #333;
         }
         h1, h2 {
-            color: #333;
             border-bottom: 1px solid #eee;
             padding-bottom: 5px;
         }
@@ -31,372 +31,531 @@
         .japanese {
             font-size: 1.2em;
         }
+        .hiragana {
+            color: #d33;
+        }
+        .katakana {
+            color: #33a;
+        }
+        .row-name {
+            font-weight: bold;
+            background-color: #f9f9f9;
+        }
         .romaji {
+            font-size: 0.8em;
             color: #666;
-            font-size: 0.9em;
         }
     </style>
 </head>
 <body>
-	<!-- 新增的返回首页按钮 -->
+    <!-- 新增的返回首页按钮 -->
     <a href="index.html" class="back-button">←</a>
 	
-    <h1>日语五十音图（含变化音）</h1>
+    <h1>日语五十音图（平假名·片假名对照）</h1>
 
     <h2>清音（基本五十音）</h2>
     <table>
         <tr>
-            <th rowspan="2">行</th>
-            <th rowspan="2">段</th>
-            <th colspan="5">段别</th>
+            <th>行</th>
+            <th>あ段<br><span class="romaji">a</span></th>
+            <th>い段<br><span class="romaji">i</span></th>
+            <th>う段<br><span class="romaji">u</span></th>
+            <th>え段<br><span class="romaji">e</span></th>
+            <th>お段<br><span class="romaji">o</span></th>
         </tr>
         <tr>
-            <th>あ段 (a)</th>
-            <th>い段 (i)</th>
-            <th>う段 (u)</th>
-            <th>え段 (e)</th>
-            <th>お段 (o)</th>
+            <td class="row-name">あ行</td>
+            <td>
+                <span class="hiragana japanese">あ</span> / 
+                <span class="katakana japanese">ア</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">い</span> / 
+                <span class="katakana japanese">イ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">う</span> / 
+                <span class="katakana japanese">ウ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">え</span> / 
+                <span class="katakana japanese">エ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">お</span> / 
+                <span class="katakana japanese">オ</span>
+            </td>
         </tr>
         <tr>
-            <td rowspan="2">あ行</td>
-            <td>平假名</td>
-            <td class="japanese">あ</td>
-            <td class="japanese">い</td>
-            <td class="japanese">う</td>
-            <td class="japanese">え</td>
-            <td class="japanese">お</td>
+            <td class="row-name">か行</td>
+            <td>
+                <span class="hiragana japanese">か</span> / 
+                <span class="katakana japanese">カ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">き</span> / 
+                <span class="katakana japanese">キ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">く</span> / 
+                <span class="katakana japanese">ク</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">け</span> / 
+                <span class="katakana japanese">ケ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">こ</span> / 
+                <span class="katakana japanese">コ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">ア</td>
-            <td class="japanese">イ</td>
-            <td class="japanese">ウ</td>
-            <td class="japanese">エ</td>
-            <td class="japanese">オ</td>
+            <td class="row-name">さ行</td>
+            <td>
+                <span class="hiragana japanese">さ</span> / 
+                <span class="katakana japanese">サ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">し</span> / 
+                <span class="katakana japanese">シ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">す</span> / 
+                <span class="katakana japanese">ス</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">せ</span> / 
+                <span class="katakana japanese">セ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">そ</span> / 
+                <span class="katakana japanese">ソ</span>
+            </td>
         </tr>
         <tr>
-            <td rowspan="2">か行</td>
-            <td>平假名</td>
-            <td class="japanese">か</td>
-            <td class="japanese">き</td>
-            <td class="japanese">く</td>
-            <td class="japanese">け</td>
-            <td class="japanese">こ</td>
+            <td class="row-name">た行</td>
+            <td>
+                <span class="hiragana japanese">た</span> / 
+                <span class="katakana japanese">タ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ち</span> / 
+                <span class="katakana japanese">チ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">つ</span> / 
+                <span class="katakana japanese">ツ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">て</span> / 
+                <span class="katakana japanese">テ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">と</span> / 
+                <span class="katakana japanese">ト</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">カ</td>
-            <td class="japanese">キ</td>
-            <td class="japanese">ク</td>
-            <td class="japanese">ケ</td>
-            <td class="japanese">コ</td>
+            <td class="row-name">な行</td>
+            <td>
+                <span class="hiragana japanese">な</span> / 
+                <span class="katakana japanese">ナ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">に</span> / 
+                <span class="katakana japanese">ニ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぬ</span> / 
+                <span class="katakana japanese">ヌ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ね</span> / 
+                <span class="katakana japanese">ネ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">の</span> / 
+                <span class="katakana japanese">ノ</span>
+            </td>
         </tr>
         <tr>
-            <td rowspan="2">さ行</td>
-            <td>平假名</td>
-            <td class="japanese">さ</td>
-            <td class="japanese">し</td>
-            <td class="japanese">す</td>
-            <td class="japanese">せ</td>
-            <td class="japanese">そ</td>
+            <td class="row-name">は行</td>
+            <td>
+                <span class="hiragana japanese">は</span> / 
+                <span class="katakana japanese">ハ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ひ</span> / 
+                <span class="katakana japanese">ヒ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ふ</span> / 
+                <span class="katakana japanese">フ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">へ</span> / 
+                <span class="katakana japanese">ヘ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ほ</span> / 
+                <span class="katakana japanese">ホ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">サ</td>
-            <td class="japanese">シ</td>
-            <td class="japanese">ス</td>
-            <td class="japanese">セ</td>
-            <td class="japanese">ソ</td>
+            <td class="row-name">ま行</td>
+            <td>
+                <span class="hiragana japanese">ま</span> / 
+                <span class="katakana japanese">マ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">み</span> / 
+                <span class="katakana japanese">ミ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">む</span> / 
+                <span class="katakana japanese">ム</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">め</span> / 
+                <span class="katakana japanese">メ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">も</span> / 
+                <span class="katakana japanese">モ</span>
+            </td>
         </tr>
         <tr>
-            <td rowspan="2">た行</td>
-            <td>平假名</td>
-            <td class="japanese">た</td>
-            <td class="japanese">ち</td>
-            <td class="japanese">つ</td>
-            <td class="japanese">て</td>
-            <td class="japanese">と</td>
+            <td class="row-name">や行</td>
+            <td>
+                <span class="hiragana japanese">や</span> / 
+                <span class="katakana japanese">ヤ</span>
+            </td>
+            <td>-</td>
+            <td>
+                <span class="hiragana japanese">ゆ</span> / 
+                <span class="katakana japanese">ユ</span>
+            </td>
+            <td>-</td>
+            <td>
+                <span class="hiragana japanese">よ</span> / 
+                <span class="katakana japanese">ヨ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">タ</td>
-            <td class="japanese">チ</td>
-            <td class="japanese">ツ</td>
-            <td class="japanese">テ</td>
-            <td class="japanese">ト</td>
+            <td class="row-name">ら行</td>
+            <td>
+                <span class="hiragana japanese">ら</span> / 
+                <span class="katakana japanese">ラ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">り</span> / 
+                <span class="katakana japanese">リ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">る</span> / 
+                <span class="katakana japanese">ル</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">れ</span> / 
+                <span class="katakana japanese">レ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ろ</span> / 
+                <span class="katakana japanese">ロ</span>
+            </td>
         </tr>
         <tr>
-            <td rowspan="2">な行</td>
-            <td>平假名</td>
-            <td class="japanese">な</td>
-            <td class="japanese">に</td>
-            <td class="japanese">ぬ</td>
-            <td class="japanese">ね</td>
-            <td class="japanese">の</td>
+            <td class="row-name">わ行</td>
+            <td>
+                <span class="hiragana japanese">わ</span> / 
+                <span class="katakana japanese">ワ</span>
+            </td>
+            <td>-</td>
+            <td>-</td>
+            <td>-</td>
+            <td>
+                <span class="hiragana japanese">を</span> / 
+                <span class="katakana japanese">ヲ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">ナ</td>
-            <td class="japanese">ニ</td>
-            <td class="japanese">ヌ</td>
-            <td class="japanese">ネ</td>
-            <td class="japanese">ノ</td>
-        </tr>
-        <tr>
-            <td rowspan="2">は行</td>
-            <td>平假名</td>
-            <td class="japanese">は</td>
-            <td class="japanese">ひ</td>
-            <td class="japanese">ふ</td>
-            <td class="japanese">へ</td>
-            <td class="japanese">ほ</td>
-        </tr>
-        <tr>
-            <td>片假名</td>
-            <td class="japanese">ハ</td>
-            <td class="japanese">ヒ</td>
-            <td class="japanese">フ</td>
-            <td class="japanese">ヘ</td>
-            <td class="japanese">ホ</td>
-        </tr>
-        <tr>
-            <td rowspan="2">ま行</td>
-            <td>平假名</td>
-            <td class="japanese">ま</td>
-            <td class="japanese">み</td>
-            <td class="japanese">む</td>
-            <td class="japanese">め</td>
-            <td class="japanese">も</td>
-        </tr>
-        <tr>
-            <td>片假名</td>
-            <td class="japanese">マ</td>
-            <td class="japanese">ミ</td>
-            <td class="japanese">ム</td>
-            <td class="japanese">メ</td>
-            <td class="japanese">モ</td>
-        </tr>
-        <tr>
-            <td rowspan="2">や行</td>
-            <td>平假名</td>
-            <td class="japanese">や</td>
-            <td>（い）</td>
-            <td class="japanese">ゆ</td>
-            <td>（え）</td>
-            <td class="japanese">よ</td>
-        </tr>
-        <tr>
-            <td>片假名</td>
-            <td class="japanese">ヤ</td>
-            <td>（イ）</td>
-            <td class="japanese">ユ</td>
-            <td>（エ）</td>
-            <td class="japanese">ヨ</td>
-        </tr>
-        <tr>
-            <td rowspan="2">ら行</td>
-            <td>平假名</td>
-            <td class="japanese">ら</td>
-            <td class="japanese">り</td>
-            <td class="japanese">る</td>
-            <td class="japanese">れ</td>
-            <td class="japanese">ろ</td>
-        </tr>
-        <tr>
-            <td>片假名</td>
-            <td class="japanese">ラ</td>
-            <td class="japanese">リ</td>
-            <td class="japanese">ル</td>
-            <td class="japanese">レ</td>
-            <td class="japanese">ロ</td>
-        </tr>
-        <tr>
-            <td rowspan="2">わ行</td>
-            <td>平假名</td>
-            <td class="japanese">わ</td>
-            <td>（い）</td>
-            <td>（う）</td>
-            <td>（え）</td>
-            <td class="japanese">を</td>
-        </tr>
-        <tr>
-            <td>片假名</td>
-            <td class="japanese">ワ</td>
-            <td>（イ）</td>
-            <td>（ウ）</td>
-            <td>（エ）</td>
-            <td class="japanese">ヲ</td>
-        </tr>
-        <tr>
-            <td colspan="2">ん</td>
-            <td class="japanese">ん</td>
-            <td colspan="4"></td>
-        </tr>
-        <tr>
-            <td colspan="2">ン</td>
-            <td class="japanese">ン</td>
-            <td colspan="4"></td>
+            <td class="row-name">ん</td>
+            <td colspan="5">
+                <span class="hiragana japanese">ん</span> / 
+                <span class="katakana japanese">ン</span>
+            </td>
         </tr>
     </table>
 
-    <h2>浊音・半浊音</h2>
+    <h2>浊音·半浊音</h2>
     <table>
         <tr>
-            <th>变化类型</th>
-            <th>が行 (ga)</th>
-            <th>ざ行 (za)</th>
-            <th>だ行 (da)</th>
-            <th>ば行 (ba)</th>
-            <th>ぱ行 (pa)</th>
+            <th>行</th>
+            <th>あ段<br><span class="romaji">a</span></th>
+            <th>い段<br><span class="romaji">i</span></th>
+            <th>う段<br><span class="romaji">u</span></th>
+            <th>え段<br><span class="romaji">e</span></th>
+            <th>お段<br><span class="romaji">o</span></th>
         </tr>
         <tr>
-            <td>平假名</td>
-            <td class="japanese">がぎぐげご</td>
-            <td class="japanese">ざじずぜぞ</td>
-            <td class="japanese">だぢづでど</td>
-            <td class="japanese">ばびぶべぼ</td>
-            <td class="japanese">ぱぴぷぺぽ</td>
+            <td class="row-name">が行</td>
+            <td>
+                <span class="hiragana japanese">が</span> / 
+                <span class="katakana japanese">ガ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぎ</span> / 
+                <span class="katakana japanese">ギ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぐ</span> / 
+                <span class="katakana japanese">グ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">げ</span> / 
+                <span class="katakana japanese">ゲ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ご</span> / 
+                <span class="katakana japanese">ゴ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">ガギグゲゴ</td>
-            <td class="japanese">ザジズゼゾ</td>
-            <td class="japanese">ダヂヅデド</td>
-            <td class="japanese">バビブベボ</td>
-            <td class="japanese">パピプペポ</td>
+            <td class="row-name">ざ行</td>
+            <td>
+                <span class="hiragana japanese">ざ</span> / 
+                <span class="katakana japanese">ザ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">じ</span> / 
+                <span class="katakana japanese">ジ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ず</span> / 
+                <span class="katakana japanese">ズ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぜ</span> / 
+                <span class="katakana japanese">ゼ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぞ</span> / 
+                <span class="katakana japanese">ゾ</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="row-name">だ行</td>
+            <td>
+                <span class="hiragana japanese">だ</span> / 
+                <span class="katakana japanese">ダ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぢ</span> / 
+                <span class="katakana japanese">ヂ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">づ</span> / 
+                <span class="katakana japanese">ヅ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">で</span> / 
+                <span class="katakana japanese">デ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ど</span> / 
+                <span class="katakana japanese">ド</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="row-name">ば行</td>
+            <td>
+                <span class="hiragana japanese">ば</span> / 
+                <span class="katakana japanese">バ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">び</span> / 
+                <span class="katakana japanese">ビ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぶ</span> / 
+                <span class="katakana japanese">ブ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">べ</span> / 
+                <span class="katakana japanese">ベ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぼ</span> / 
+                <span class="katakana japanese">ボ</span>
+            </td>
+        </tr>
+        <tr>
+            <td class="row-name">ぱ行</td>
+            <td>
+                <span class="hiragana japanese">ぱ</span> / 
+                <span class="katakana japanese">パ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぴ</span> / 
+                <span class="katakana japanese">ピ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぷ</span> / 
+                <span class="katakana japanese">プ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぺ</span> / 
+                <span class="katakana japanese">ペ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぽ</span> / 
+                <span class="katakana japanese">ポ</span>
+            </td>
         </tr>
     </table>
 
     <h2>拗音</h2>
     <table>
         <tr>
-            <th rowspan="2">组合</th>
-            <th colspan="3">きゃ行</th>
-            <th colspan="3">しゃ行</th>
-            <th colspan="3">ちゃ行</th>
+            <th>行</th>
+            <th>ゃ段<br><span class="romaji">ya</span></th>
+            <th>ゅ段<br><span class="romaji">yu</span></th>
+            <th>ょ段<br><span class="romaji">yo</span></th>
         </tr>
         <tr>
-            <th>きゃ (kya)</th>
-            <th>きゅ (kyu)</th>
-            <th>きょ (kyo)</th>
-            <th>しゃ (sha)</th>
-            <th>しゅ (shu)</th>
-            <th>しょ (sho)</th>
-            <th>ちゃ (cha)</th>
-            <th>ちゅ (chu)</th>
-            <th>ちょ (cho)</th>
+            <td class="row-name">きゃ行</td>
+            <td>
+                <span class="hiragana japanese">きゃ</span> / 
+                <span class="katakana japanese">キャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">きゅ</span> / 
+                <span class="katakana japanese">キュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">きょ</span> / 
+                <span class="katakana japanese">キョ</span>
+            </td>
         </tr>
         <tr>
-            <td>平假名</td>
-            <td class="japanese">きゃ</td>
-            <td class="japanese">きゅ</td>
-            <td class="japanese">きょ</td>
-            <td class="japanese">しゃ</td>
-            <td class="japanese">しゅ</td>
-            <td class="japanese">しょ</td>
-            <td class="japanese">ちゃ</td>
-            <td class="japanese">ちゅ</td>
-            <td class="japanese">ちょ</td>
+            <td class="row-name">しゃ行</td>
+            <td>
+                <span class="hiragana japanese">しゃ</span> / 
+                <span class="katakana japanese">シャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">しゅ</span> / 
+                <span class="katakana japanese">シュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">しょ</span> / 
+                <span class="katakana japanese">ショ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">キャ</td>
-            <td class="japanese">キュ</td>
-            <td class="japanese">キョ</td>
-            <td class="japanese">シャ</td>
-            <td class="japanese">シュ</td>
-            <td class="japanese">ショ</td>
-            <td class="japanese">チャ</td>
-            <td class="japanese">チュ</td>
-            <td class="japanese">チョ</td>
-        </tr>
-    </table>
-
-    <table>
-        <tr>
-            <th rowspan="2">组合</th>
-            <th colspan="3">にゃ行</th>
-            <th colspan="3">ひゃ行</th>
-            <th colspan="3">みゃ行</th>
+            <td class="row-name">ちゃ行</td>
+            <td>
+                <span class="hiragana japanese">ちゃ</span> / 
+                <span class="katakana japanese">チャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ちゅ</span> / 
+                <span class="katakana japanese">チュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ちょ</span> / 
+                <span class="katakana japanese">チョ</span>
+            </td>
         </tr>
         <tr>
-            <th>にゃ (nya)</th>
-            <th>にゅ (nyu)</th>
-            <th>にょ (nyo)</th>
-            <th>ひゃ (hya)</th>
-            <th>ひゅ (hyu)</th>
-            <th>ひょ (hyo)</th>
-            <th>みゃ (mya)</th>
-            <th>みゅ (myu)</th>
-            <th>みょ (myo)</th>
+            <td class="row-name">にゃ行</td>
+            <td>
+                <span class="hiragana japanese">にゃ</span> / 
+                <span class="katakana japanese">ニャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">にゅ</span> / 
+                <span class="katakana japanese">ニュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">にょ</span> / 
+                <span class="katakana japanese">ニョ</span>
+            </td>
         </tr>
         <tr>
-            <td>平假名</td>
-            <td class="japanese">にゃ</td>
-            <td class="japanese">にゅ</td>
-            <td class="japanese">にょ</td>
-            <td class="japanese">ひゃ</td>
-            <td class="japanese">ひゅ</td>
-            <td class="japanese">ひょ</td>
-            <td class="japanese">みゃ</td>
-            <td class="japanese">みゅ</td>
-            <td class="japanese">みょ</td>
+            <td class="row-name">ひゃ行</td>
+            <td>
+                <span class="hiragana japanese">ひゃ</span> / 
+                <span class="katakana japanese">ヒャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ひゅ</span> / 
+                <span class="katakana japanese">ヒュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ひょ</span> / 
+                <span class="katakana japanese">ヒョ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">ニャ</td>
-            <td class="japanese">ニュ</td>
-            <td class="japanese">ニョ</td>
-            <td class="japanese">ヒャ</td>
-            <td class="japanese">ヒュ</td>
-            <td class="japanese">ヒョ</td>
-            <td class="japanese">ミャ</td>
-            <td class="japanese">ミュ</td>
-            <td class="japanese">ミョ</td>
-        </tr>
-    </table>
-
-    <table>
-        <tr>
-            <th rowspan="2">组合</th>
-            <th colspan="3">りゃ行</th>
-            <th colspan="3">ぎゃ行</th>
-            <th colspan="3">じゃ行</th>
+            <td class="row-name">みゃ行</td>
+            <td>
+                <span class="hiragana japanese">みゃ</span> / 
+                <span class="katakana japanese">ミャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">みゅ</span> / 
+                <span class="katakana japanese">ミュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">みょ</span> / 
+                <span class="katakana japanese">ミョ</span>
+            </td>
         </tr>
         <tr>
-            <th>りゃ (rya)</th>
-            <th>りゅ (ryu)</th>
-            <th>りょ (ryo)</th>
-            <th>ぎゃ (gya)</th>
-            <th>ぎゅ (gyu)</th>
-            <th>ぎょ (gyo)</th>
-            <th>じゃ (ja)</th>
-            <th>じゅ (ju)</th>
-            <th>じょ (jo)</th>
+            <td class="row-name">りゃ行</td>
+            <td>
+                <span class="hiragana japanese">りゃ</span> / 
+                <span class="katakana japanese">リャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">りゅ</span> / 
+                <span class="katakana japanese">リュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">りょ</span> / 
+                <span class="katakana japanese">リョ</span>
+            </td>
         </tr>
         <tr>
-            <td>平假名</td>
-            <td class="japanese">りゃ</td>
-            <td class="japanese">りゅ</td>
-            <td class="japanese">りょ</td>
-            <td class="japanese">ぎゃ</td>
-            <td class="japanese">ぎゅ</td>
-            <td class="japanese">ぎょ</td>
-            <td class="japanese">じゃ</td>
-            <td class="japanese">じゅ</td>
-            <td class="japanese">じょ</td>
+            <td class="row-name">ぎゃ行</td>
+            <td>
+                <span class="hiragana japanese">ぎゃ</span> / 
+                <span class="katakana japanese">ギャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぎゅ</span> / 
+                <span class="katakana japanese">ギュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">ぎょ</span> / 
+                <span class="katakana japanese">ギョ</span>
+            </td>
         </tr>
         <tr>
-            <td>片假名</td>
-            <td class="japanese">リャ</td>
-            <td class="japanese">リュ</td>
-            <td class="japanese">リョ</td>
-            <td class="japanese">ギャ</td>
-            <td class="japanese">ギュ</td>
-            <td class="japanese">ギョ</td>
-            <td class="japanese">ジャ</td>
-            <td class="japanese">ジュ</td>
-            <td class="japanese">ジョ</td>
+            <td class="row-name">じゃ行</td>
+            <td>
+                <span class="hiragana japanese">じゃ</span> / 
+                <span class="katakana japanese">ジャ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">じゅ</span> / 
+                <span class="katakana japanese">ジュ</span>
+            </td>
+            <td>
+                <span class="hiragana japanese">じょ</span> / 
+                <span class="katakana japanese">ジョ</span>
+            </td>
         </tr>
     </table>
 
@@ -404,26 +563,21 @@
     <table>
         <tr>
             <th>类型</th>
-            <th>表示方法</th>
-            <th>例子</th>
+            <th>平假名</th>
+            <th>片假名</th>
+            <th>示例</th>
         </tr>
         <tr>
-            <td rowspan="2">促音 (っ)</td>
-            <td>平假名小写「っ」</td>
-            <td>がっこう (gakkou)</td>
+            <td>促音</td>
+            <td class="hiragana japanese">っ</td>
+            <td class="katakana japanese">ッ</td>
+            <td>がっこう (gakkou) / サッカー (sakkaa)</td>
         </tr>
         <tr>
-            <td>片假名小写「ッ」</td>
-            <td>サッカー (sakkaa)</td>
-        </tr>
-        <tr>
-            <td rowspan="2">长音 (ー)</td>
-            <td>平假名「ー」</td>
-            <td>おばあさん (obaasan)</td>
-        </tr>
-        <tr>
-            <td>片假名「ー」</td>
-            <td>ケーキ (keeki)</td>
+            <td>长音</td>
+            <td>ー</td>
+            <td>ー</td>
+            <td>おばあさん (obaasan) / ケーキ (keeki)</td>
         </tr>
     </table>
 </body>
