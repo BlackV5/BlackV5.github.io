@@ -1,0 +1,437 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no,viewport-fit=cover">
+<title>打砖块 · 多关卡版</title>
+<style>
+  html,body{margin:0;height:100%;background:#0d0f1a;overflow:hidden;touch-action:none;overscroll-behavior:none;user-select:none;}
+  #wrap{height:100%;display:flex;align-items:center;justify-content:center;}
+  canvas{display:block;background:#141833;border-radius:8px;box-shadow:0 10px 40px #0008;}
+</style>
+</head>
+<body>
+<div id="wrap"><canvas id="game"></canvas></div>
+<script>
+// ==================== CONFIG（可调参数） ====================
+const W = 800, H = 600;                 // 逻辑分辨率
+const PADDLE_W = 110, PADDLE_W_EXT = 180, PADDLE_H = 14, PADDLE_SPEED = 520;
+const BALL_R = 8, BALL_SPEED = 360, BALL_SPEED_STEP = 45; // 每关递增球速
+const MAX_BOUNCE_ANGLE = 1.05;          // 弧度，约 60°
+const BRICK_GAP = 6, BRICK_TOP = 70, BRICK_H = 26, COLS = 10;
+const LIVES = 3, MAX_BALLS = 9;
+const DROP_CHANCE = 0.15;               // 砖块掉道具概率
+const PU_FALL = 160;                    // 道具下落速度
+const PU_EXT_TIME = 12;                 // 加长持续时间（秒）
+const PU_LASER_TIME = 9;                // 激光持续时间（秒）
+const LASER_INTERVAL = 0.4;             // 激光自动射击间隔
+const LASER_SPEED = 720;
+const FIXED_DT = 1 / 120;               // 固定步长：物理更稳定，卡帧不穿模
+const HS_KEY = 'breakout-highscore';    // localStorage 最高分键名
+const PU_SLOW_TIME = 8;                 // 慢速球持续时间（秒）
+const PU_SLOW_SCALE = 0.6;              // 慢速期间球的时间缩放
+const LIVES_MAX = 6;                    // 生命上限（加命道具封顶）
+const COLORS = ['#ef476f','#ffd166','#06d6a0','#118ab2','#a06cd5','#f78c6b'];
+const PU_STYLE = {
+  E: { color: '#06d6a0', label: '加长' },
+  M: { color: '#ffd166', label: '多球' },
+  L: { color: '#a06cd5', label: '激光' },
+  S: { color: '#4cc9f0', label: '慢速' },
+  H: { color: '#ff6b9d', label: '加命' },
+};
+// ==================== 关卡编辑器 ====================
+// 想自己画关卡？改下面的 LEVELS 数组即可，规则：
+//   1. 每个字符串是一行砖块，必须正好 10 个字符（COLS = 10）
+//   2. '.'  = 空位（没有砖块）
+//   3. '1'/'2'/'3' = 砖块血量（要打 1/2/3 下才碎，数字越大越硬）
+//   4. 每关的 speed 是该关的球速，想更难就调大
+//   5. 增删关卡：直接往数组里加/删一个 { speed: xxx, map: [...] } 对象
+//   6. 行数不限（推荐 4~8 行），太靠下的砖块离挡板近会更难
+// 画好保存后刷新页面就能玩，按数组顺序从第 1 关开始挑战。
+const LEVELS = [
+  { speed: 360, map: [
+    '1111111111',
+    '1222222221',
+    '1222222221',
+    '1111111111',
+    '..111111..',
+  ]},
+  { speed: 405, map: [
+    '2.2.2.2.2.',
+    '.1.1.1.1.1',
+    '2.2.2.2.2.',
+    '.1.1.1.1.1',
+    '2.2.2.2.2.',
+  ]},
+  { speed: 450, map: [
+    '2222222222',
+    '2........2',
+    '2.333333.2',
+    '2.322223.2',
+    '2.333333.2',
+    '2........2',
+  ]},
+  { speed: 495, map: [
+    '..333333..',
+    '.32222223.',
+    '32.1111.23',
+    '.32222223.',
+    '..333333..',
+  ]},
+  { speed: 540, map: [
+    '3322222233',
+    '3111111113',
+    '.31333313.',
+    '.31111113.',
+    '..333333..',
+  ]},
+];
+// ============================================================
+
+const cvs = document.getElementById('game');
+const ctx = cvs.getContext('2d');
+const dpr = Math.min(devicePixelRatio || 1, 2);
+function resize() {
+  const s = Math.min(innerWidth / W, innerHeight / H);
+  cvs.style.width = W * s + 'px'; cvs.style.height = H * s + 'px';
+  cvs.width = W * s * dpr; cvs.height = H * s * dpr;
+  ctx.setTransform(s * dpr, 0, 0, s * dpr, 0, 0);
+}
+addEventListener('resize', resize); resize();
+
+// ---- 音效：Web Audio 程序化合成，无外部素材 ----
+let ac, muted = false;
+function audio() { return ac ||= new (window.AudioContext || window.webkitAudioContext)(); }
+function beep(freq = 440, dur = .08, type = 'square', vol = .12) {
+  if (muted) return;
+  const a = audio(), o = a.createOscillator(), g = a.createGain();
+  o.type = type; o.frequency.value = freq;
+  g.gain.setValueAtTime(vol, a.currentTime);
+  g.gain.exponentialRampToValueAtTime(.0001, a.currentTime + dur);
+  o.connect(g).connect(a.destination); o.start(); o.stop(a.currentTime + dur);
+}
+// 过关/通关小旋律
+function fanfare(notes = [523, 659, 784, 1047]) {
+  notes.forEach((f, i) => setTimeout(() => beep(f, .15, 'triangle', .14), i * 110));
+}
+
+// ---- 最高分：localStorage ----
+let highScore = 0;
+try { highScore = +localStorage.getItem(HS_KEY) || 0; } catch (e) {}
+function saveHighScore() {
+  if (score > highScore) {
+    highScore = score; newRecord = true;
+    try { localStorage.setItem(HS_KEY, highScore); } catch (e) {}
+  }
+}
+
+// ---- 输入：键盘 + 鼠标 + 触屏统一 ----
+const keys = new Set();
+addEventListener('keydown', e => {
+  keys.add(e.code);
+  if (['ArrowLeft','ArrowRight','Space'].includes(e.code)) e.preventDefault();
+  if (e.code === 'KeyR') reset();
+  if (e.code === 'KeyM') muted = !muted;
+});
+addEventListener('keyup', e => keys.delete(e.code));
+let pointerX = null;
+cvs.addEventListener('pointermove', e => {
+  const r = cvs.getBoundingClientRect();
+  pointerX = (e.clientX - r.left) / r.width * W;
+});
+cvs.addEventListener('pointerdown', () => {
+  audio().resume();
+  if (state === S.READY) launch();
+});
+
+// ---- 状态 ----
+const S = { READY: 0, PLAY: 1, OVER: 2, WIN: 3 };
+let state, level, score, lives, parts;
+let slowTimer = 0, fwTimer = 0, newRecord = false;
+let paddle, balls, bricks, powerups, lasers;
+
+function reset() {
+  state = S.READY; level = 0; score = 0; lives = LIVES; parts = [];
+  slowTimer = 0; fwTimer = 0; newRecord = false;
+  paddle = { x: (W - PADDLE_W) / 2, y: H - 40, w: PADDLE_W, h: PADDLE_H,
+             extTimer: 0, laserTimer: 0, cool: 0 };
+  powerups = []; lasers = [];
+  buildLevel(0);
+}
+
+// 按关卡布局生成砖块，并重置球到挡板上
+function buildLevel(n) {
+  const map = LEVELS[n].map;
+  const rows = map.length;
+  const bw = (W - BRICK_GAP * (COLS + 1)) / COLS;
+  bricks = [];
+  for (let r = 0; r < rows; r++) for (let c = 0; c < COLS; c++) {
+    const ch = map[r][c];
+    if (ch === '.') continue;
+    bricks.push({
+      x: BRICK_GAP + c * (bw + BRICK_GAP), y: BRICK_TOP + r * (BRICK_H + BRICK_GAP),
+      w: bw, h: BRICK_H, color: COLORS[r % COLORS.length], hp: +ch, maxHp: +ch, alive: true
+    });
+  }
+  powerups = []; lasers = [];
+  balls = [{ x: 0, y: 0, vx: 0, vy: 0, r: BALL_R, speed: LEVELS[n].speed }];
+  paddle.w = PADDLE_W; paddle.extTimer = 0; paddle.laserTimer = 0;
+}
+
+function launch() {
+  const a = (Math.random() * .6 - .3) - Math.PI / 2;  // 向上随机小角度
+  const b = balls[0];
+  b.vx = Math.cos(a) * b.speed; b.vy = Math.sin(a) * b.speed;
+  state = S.PLAY;
+}
+
+function burst(x, y, color, n = 10, life = .45) {
+  for (let i = 0; i < n; i++) {
+    const a = Math.random() * Math.PI * 2, s = 50 + Math.random() * 180;
+    parts.push({ x, y, vx: Math.cos(a) * s, vy: Math.sin(a) * s, life, color, maxLife: life });
+  }
+}
+
+// ---- 道具 ----
+function maybeDrop(b) {
+  if (Math.random() >= DROP_CHANCE) return;
+  const types = ['E', 'M', 'L', 'S', 'H'];
+  powerups.push({ x: b.x + b.w / 2, y: b.y + b.h / 2, type: types[Math.random() * types.length | 0] });
+}
+function applyPU(t) {
+  beep(920, .15, 'triangle', .15);
+  if (t === 'E') paddle.extTimer = PU_EXT_TIME;
+  else if (t === 'L') paddle.laserTimer = PU_LASER_TIME;
+  else if (t === 'S') { slowTimer = PU_SLOW_TIME; beep(300, .2, 'sine', .15); }
+  else if (t === 'H') {
+    if (lives < LIVES_MAX) { lives++; fanfare([660, 880]); }
+    else { score += 50; beep(1100, .12, 'triangle', .14); }  // 生命已满改为加分
+  }
+  else if (t === 'M') {                             // 多球：每颗球分裂出两颗
+    const cur = balls.slice();
+    for (const b of cur) {
+      if (balls.length >= MAX_BALLS) break;
+      for (const da of [-0.45, 0.45]) {
+        if (balls.length >= MAX_BALLS) break;
+        const sp = Math.hypot(b.vx, b.vy) || b.speed;
+        const ang = Math.atan2(b.vy, b.vx) + da;
+        balls.push({ x: b.x, y: b.y, vx: Math.cos(ang) * sp, vy: Math.sin(ang) * sp, r: BALL_R, speed: b.speed });
+      }
+    }
+  }
+}
+
+// 砖块受击统一入口（球撞 / 激光打共用）
+function hitBrick(b) {
+  b.hp--;
+  if (b.hp <= 0) {
+    b.alive = false; score += 10;
+    burst(b.x + b.w / 2, b.y + b.h / 2, b.color);
+    beep(660 + Math.random() * 200, .07, 'square');
+    maybeDrop(b);
+  } else { beep(300, .05); }
+}
+
+function update(dt) {
+  // 挡板宽度 / 激光计时
+  paddle.extTimer = Math.max(0, paddle.extTimer - dt);
+  paddle.laserTimer = Math.max(0, paddle.laserTimer - dt);
+  slowTimer = Math.max(0, slowTimer - dt);
+  paddle.w += ((paddle.extTimer > 0 ? PADDLE_W_EXT : PADDLE_W) - paddle.w) * Math.min(1, 10 * dt); // 平滑变宽
+
+  // 挡板：键盘优先，触屏/鼠标覆盖
+  if (keys.has('ArrowLeft') || keys.has('KeyA')) paddle.x -= PADDLE_SPEED * dt;
+  if (keys.has('ArrowRight') || keys.has('KeyD')) paddle.x += PADDLE_SPEED * dt;
+  if (pointerX !== null) paddle.x = pointerX - paddle.w / 2;
+  paddle.x = Math.max(0, Math.min(W - paddle.w, paddle.x));
+
+  if (state !== S.PLAY) {
+    // 球停在挡板上待发射
+    if (balls.length) {
+      const b = balls[0];
+      b.x = paddle.x + paddle.w / 2; b.y = paddle.y - b.r - 2;
+      if (keys.has('Space') && state === S.READY) launch();
+    }
+    // 破纪录烟花秀：结算画面持续放烟花
+    if (newRecord && (state === S.OVER || state === S.WIN)) {
+      fwTimer -= dt;
+      if (fwTimer <= 0) {
+        fwTimer = 0.45 + Math.random() * 0.3;
+        const c = COLORS[Math.random() * COLORS.length | 0];
+        burst(W * (0.15 + Math.random() * 0.7), H * (0.15 + Math.random() * 0.45), c, 42, 1.1);
+        beep(200 + Math.random() * 600, .3, 'triangle', .08);
+      }
+    }
+    // 粒子在结算画面继续更新
+    for (const p of parts) { p.vy += 900 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
+    parts = parts.filter(p => p.life > 0);
+    return;
+  }
+
+  // ---- 激光自动射击 ----
+  paddle.cool -= dt;
+  if (paddle.laserTimer > 0 && paddle.cool <= 0) {
+    paddle.cool = LASER_INTERVAL;
+    lasers.push({ x: paddle.x + 6, y: paddle.y }, { x: paddle.x + paddle.w - 6, y: paddle.y });
+    beep(1200, .06, 'sawtooth', .07);
+  }
+  for (const l of lasers) l.y -= LASER_SPEED * dt;
+  lasers = lasers.filter(l => {
+    if (l.y < -20) return false;
+    for (const b of bricks) {
+      if (!b.alive) continue;
+      if (l.x >= b.x && l.x <= b.x + b.w && l.y >= b.y && l.y <= b.y + b.h) {
+        hitBrick(b); return false;
+      }
+    }
+    return true;
+  });
+
+  // ---- 球体运动（多球） ----
+  for (let i = balls.length - 1; i >= 0; i--) {
+    const ball = balls[i];
+    const sdt = dt * (slowTimer > 0 ? PU_SLOW_SCALE : 1);   // 慢速道具：只影响球
+    ball.x += ball.vx * sdt; ball.y += ball.vy * sdt;
+    if (ball.x - ball.r < 0) { ball.x = ball.r;     ball.vx *= -1; beep(330, .05); }
+    if (ball.x + ball.r > W) { ball.x = W - ball.r; ball.vx *= -1; beep(330, .05); }
+    if (ball.y - ball.r < 0) { ball.y = ball.r;     ball.vy *= -1; beep(330, .05); }
+
+    // 掉出底部：移除这颗球
+    if (ball.y - ball.r > H) {
+      balls.splice(i, 1);
+      if (balls.length === 0) {                       // 没球了才扣命
+        lives--; beep(140, .25, 'sawtooth', .18);
+        if (lives <= 0) { state = S.OVER; saveHighScore(); }
+        else {
+          // 新球放回挡板，速度回到当前关卡基准
+          balls.push({ x: 0, y: 0, vx: 0, vy: 0, r: BALL_R, speed: LEVELS[level].speed });
+          state = S.READY;
+        }
+      }
+      continue;
+    }
+
+    // 挡板反弹：按命中位置改变角度，玩家可控
+    if (ball.vy > 0 && ball.y + ball.r >= paddle.y && ball.y - ball.r <= paddle.y + paddle.h &&
+        ball.x >= paddle.x - ball.r && ball.x <= paddle.x + paddle.w + ball.r) {
+      const rel = (ball.x - (paddle.x + paddle.w / 2)) / (paddle.w / 2);
+      const ang = rel * MAX_BOUNCE_ANGLE;
+      const sp = Math.max(Math.hypot(ball.vx, ball.vy), ball.speed);
+      ball.vx = Math.sin(ang) * sp; ball.vy = -Math.abs(Math.cos(ang) * sp);
+      ball.y = paddle.y - ball.r;
+      beep(520, .06, 'square');
+    }
+
+    // 砖块碰撞（圆 vs AABB），一帧只处理一块
+    for (const b of bricks) {
+      if (!b.alive) continue;
+      const nx = Math.max(b.x, Math.min(ball.x, b.x + b.w));
+      const ny = Math.max(b.y, Math.min(ball.y, b.y + b.h));
+      if ((ball.x - nx) ** 2 + (ball.y - ny) ** 2 < ball.r ** 2) {
+        const ox = Math.min(ball.x - b.x, b.x + b.w - ball.x);
+        const oy = Math.min(ball.y - b.y, b.y + b.h - ball.y);
+        if (ox < oy) ball.vx *= -1; else ball.vy *= -1;
+        hitBrick(b);
+        break;
+      }
+    }
+  }
+
+  // ---- 道具下落与拾取 ----
+  for (const p of powerups) p.y += PU_FALL * dt;
+  powerups = powerups.filter(p => {
+    if (p.y > H + 20) return false;
+    if (p.y + 10 >= paddle.y && p.y - 10 <= paddle.y + paddle.h &&
+        p.x >= paddle.x - 10 && p.x <= paddle.x + paddle.w + 10) {
+      applyPU(p.type); burst(p.x, p.y, PU_STYLE[p.type].color, 12);
+      return false;
+    }
+    return true;
+  });
+
+  // ---- 过关判定 ----
+  if (bricks.every(b => !b.alive)) {
+    level++;
+    if (level >= LEVELS.length) { state = S.WIN; saveHighScore(); fanfare(); }
+    else { fanfare([523, 659, 784]); buildLevel(level); state = S.READY; }
+  }
+
+  // 粒子
+  for (const p of parts) { p.vy += 900 * dt; p.x += p.vx * dt; p.y += p.vy * dt; p.life -= dt; }
+  parts = parts.filter(p => p.life > 0);
+}
+
+function render() {
+  ctx.fillStyle = '#141833'; ctx.fillRect(0, 0, W, H);
+  // 砖块：按剩余血量调透明度，硬砖带描边
+  for (const b of bricks) {
+    if (!b.alive) continue;
+    ctx.fillStyle = b.color;
+    ctx.globalAlpha = b.hp / b.maxHp * .55 + .45;
+    ctx.fillRect(b.x, b.y, b.w, b.h);
+    if (b.maxHp > 1) { ctx.globalAlpha = 1; ctx.strokeStyle = '#fff6'; ctx.strokeRect(b.x + .5, b.y + .5, b.w - 1, b.h - 1); }
+  }
+  ctx.globalAlpha = 1;
+  // 道具胶囊
+  for (const p of powerups) {
+    const st = PU_STYLE[p.type];
+    ctx.fillStyle = st.color;
+    ctx.beginPath(); ctx.roundRect(p.x - 16, p.y - 10, 32, 20, 10); ctx.fill();
+    ctx.fillStyle = '#000a'; ctx.font = 'bold 13px system-ui, sans-serif'; ctx.textAlign = 'center';
+    ctx.fillText(st.label, p.x, p.y + 5); ctx.textAlign = 'left';
+  }
+  // 激光
+  ctx.fillStyle = '#c77dff';
+  for (const l of lasers) ctx.fillRect(l.x - 1.5, l.y - 14, 3, 14);
+  // 粒子
+  for (const p of parts) {
+    ctx.globalAlpha = Math.max(0, p.life / (p.maxLife || .45)); ctx.fillStyle = p.color;
+    ctx.fillRect(p.x, p.y, 4, 4);
+  }
+  ctx.globalAlpha = 1;
+  // 挡板与球（激光状态挡板变紫）
+  ctx.fillStyle = paddle.laserTimer > 0 ? '#c77dff' : '#e0e6ff';
+  ctx.fillRect(paddle.x, paddle.y, paddle.w, paddle.h);
+  ctx.fillStyle = '#fff';
+  for (const b of balls) { ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, Math.PI * 2); ctx.fill(); }
+  // HUD
+  ctx.fillStyle = '#8ea0d0'; ctx.font = '16px system-ui, sans-serif';
+  ctx.fillText('分数 ' + score, 16, 26);
+  ctx.fillText('最高 ' + Math.max(highScore, score), 120, 26);
+  ctx.fillText('关卡 ' + (level + 1) + '/' + LEVELS.length, 235, 26);
+  ctx.fillText('生命 ' + '●'.repeat(Math.max(0, lives)), W - 160, 26);
+  ctx.fillText(muted ? '🔇 M' : '🔊 M', W - 52, 26);
+  // 生效中的道具提示
+  let fx = '';
+  if (paddle.extTimer > 0) fx += '加长 ' + Math.ceil(paddle.extTimer) + 's　';
+  if (paddle.laserTimer > 0) fx += '激光 ' + Math.ceil(paddle.laserTimer) + 's　';
+  if (slowTimer > 0) fx += '慢速 ' + Math.ceil(slowTimer) + 's　';
+  if (fx) { ctx.fillStyle = '#ffd166'; ctx.textAlign = 'center'; ctx.fillText(fx, W / 2, 26); ctx.textAlign = 'left'; }
+  // 提示层
+  if (state !== S.PLAY) {
+    ctx.fillStyle = '#000a'; ctx.fillRect(0, 0, W, H);
+    ctx.fillStyle = '#fff'; ctx.textAlign = 'center';
+    ctx.font = 'bold 40px system-ui, sans-serif';
+    const txt = state === S.WIN ? '全部通关！' : state === S.OVER ? '游戏结束' : '关卡 ' + (level + 1);
+    ctx.fillText(txt, W / 2, H / 2 - 10);
+    ctx.font = '18px system-ui, sans-serif'; ctx.fillStyle = '#9fb0e0';
+    if (state === S.WIN) ctx.fillText('最终得分 ' + score + (score >= highScore && score > 0 ? ' 🏆新纪录！' : '') + '　按 R 再来一局', W / 2, H / 2 + 30);
+    else if (state === S.OVER) ctx.fillText('得分 ' + score + (score >= highScore && score > 0 ? ' 🏆新纪录！' : '') + '　最高 ' + highScore + '　按 R 重开', W / 2, H / 2 + 30);
+    else ctx.fillText(level === 0 ? '← → / A D 或鼠标移动　空格或点击发球　R 重开　M 静音'
+                                  : '空格或点击发球', W / 2, H / 2 + 30);
+    ctx.textAlign = 'left';
+  }
+}
+
+// ---- 固定步长主循环 ----
+let last = performance.now(), acc = 0;
+function frame(now) {
+  acc += Math.min((now - last) / 1000, 0.1); last = now;
+  while (acc >= FIXED_DT) { update(FIXED_DT); acc -= FIXED_DT; }
+  render();
+  requestAnimationFrame(frame);
+}
+reset(); requestAnimationFrame(frame);
+</script>
+</body>
+</html>
