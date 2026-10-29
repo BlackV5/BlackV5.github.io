@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>五十音图 · 详细学习</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🇯🇵</text></svg>">
+<style>
+:root {
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --text: #24292f;
+  --text-sub: #6b7280;
+  --border: #e5e7eb;
+  --primary: #2b5bd7;
+  --primary-light: #eaf0fd;
+  --chip-bg: #f0f1f3;
+  --danger: #e5484d;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", "Hiragino Sans", sans-serif;
+  background: var(--bg); color: var(--text); min-height: 100vh;
+}
+.container { max-width: 1000px; margin: 0 auto; padding: 24px 18px 70px; }
+
+/* ===== 顶栏 ===== */
+.top { display: flex; align-items: center; justify-content: space-between; flex-wrap: wrap; gap: 10px; }
+.back {
+  text-decoration: none; color: var(--text-sub); font-size: 13.5px;
+  border: 1px solid var(--border); border-radius: 8px; padding: 7px 14px; background: var(--card);
+}
+.back:hover { color: var(--primary); border-color: var(--primary); }
+.ctrl { display: flex; gap: 8px; }
+.ctrl button {
+  border: 1px solid var(--border); background: var(--card); color: var(--text);
+  border-radius: 8px; padding: 7px 14px; font-size: 13px; cursor: pointer;
+}
+.ctrl button:hover { border-color: var(--primary); color: var(--primary); }
+h1 { text-align: center; font-size: 26px; margin-top: 18px; }
+.sub { text-align: center; color: var(--text-sub); font-size: 13.5px; margin-top: 8px; }
+.tip {
+  text-align: center; font-size: 13px; color: var(--text-sub); background: var(--card);
+  border: 1px solid var(--border); border-radius: 8px; padding: 9px 14px; margin: 16px auto 0; max-width: 640px;
+}
+
+/* ===== 标签页 ===== */
+.tabs { display: flex; justify-content: center; gap: 8px; margin: 20px 0 22px; flex-wrap: wrap; }
+.tab {
+  border: 1px solid var(--border); background: var(--card); color: var(--text-sub);
+  border-radius: 8px; padding: 8px 18px; font-size: 14px; cursor: pointer;
+}
+.tab:hover { color: var(--primary); }
+.tab.active { background: var(--primary); border-color: var(--primary); color: #fff; font-weight: 600; }
+.panel { display: none; }
+.panel.show { display: block; }
+
+/* ===== 音图表格 ===== */
+.table { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 14px; margin-bottom: 14px; }
+.trow { display: grid; grid-template-columns: 72px repeat(5, 1fr); gap: 6px; margin-bottom: 6px; }
+.trow:last-child { margin-bottom: 0; }
+.rlabel {
+  display: flex; align-items: center; justify-content: center;
+  font-size: 13px; color: var(--text-sub); background: var(--chip-bg); border-radius: 6px; font-weight: 600;
+}
+.cell {
+  border: 1px solid var(--border); background: #fff; border-radius: 6px; cursor: pointer;
+  padding: 9px 4px 7px; text-align: center; transition: .15s; font-family: inherit;
+}
+.cell:hover { border-color: var(--primary); background: var(--primary-light); }
+.cell .h { display: block; font-size: 24px; line-height: 1.2; }
+.cell .k { display: block; font-size: 13px; color: var(--text-sub); margin-top: 1px; }
+.cell .r { display: block; font-size: 11.5px; color: var(--primary); margin-top: 2px; }
+.cell.blank { border: none; background: transparent; cursor: default; }
+body.hide-romaji .r { visibility: hidden; }
+.sec-title { font-size: 15px; font-weight: 700; margin: 22px 0 10px; }
+.sec-title small { font-weight: 400; color: var(--text-sub); margin-left: 8px; font-size: 12.5px; }
+
+/* ===== 详解弹窗 ===== */
+.mask {
+  position: fixed; inset: 0; background: rgba(0,0,0,.45); z-index: 50;
+  display: none; align-items: center; justify-content: center; padding: 18px;
+}
+.mask.show { display: flex; }
+.modal {
+  background: var(--card); border-radius: 14px; max-width: 460px; width: 100%;
+  padding: 24px; box-shadow: 0 20px 60px rgba(0,0,0,.25); animation: pop .2s ease;
+  max-height: 86vh; overflow-y: auto;
+}
+@keyframes pop { from { transform: scale(.95); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.kana-pair { display: flex; align-items: baseline; justify-content: center; gap: 18px; margin-bottom: 4px; }
+.kana-pair .big { font-size: 64px; line-height: 1.1; }
+.kana-pair .small { font-size: 34px; color: var(--text-sub); }
+.romaji-big { text-align: center; color: var(--primary); font-size: 18px; font-weight: 700; letter-spacing: 2px; }
+.d-sec { border-top: 1px solid var(--border); margin-top: 14px; padding-top: 12px; font-size: 13.5px; line-height: 1.8; }
+.d-sec .lab { color: var(--text-sub); font-size: 12.5px; font-weight: 600; display: block; margin-bottom: 3px; }
+.word { color: var(--text); }
+.word b { color: var(--primary); font-weight: 600; }
+.note { color: #b45309; }
+.speak-btn {
+  display: block; margin: 14px auto 0; border: none; cursor: pointer; color: #fff;
+  background: var(--primary); border-radius: 8px; padding: 9px 26px; font-size: 14px; font-weight: 600;
+}
+.speak-btn:hover { background: #1e4ab8; }
+.close-x {
+  float: right; border: none; background: none; font-size: 18px; color: var(--text-sub);
+  cursor: pointer; line-height: 1;
+}
+
+/* ===== 知识卡片 ===== */
+.cards { display: grid; grid-template-columns: repeat(auto-fill, minmax(290px, 1fr)); gap: 12px; }
+.kcard { background: var(--card); border: 1px solid var(--border); border-radius: 10px; padding: 16px 18px; }
+.kcard h3 { font-size: 14.5px; margin-bottom: 8px; }
+.kcard h3::before { content: "◆ "; color: var(--primary); font-size: 12px; }
+.kcard p { font-size: 13px; color: var(--text-sub); line-height: 1.85; }
+.kcard p b { color: var(--text); font-weight: 600; }
+.kcard .eg { color: var(--primary); }
+
+footer { text-align: center; color: var(--text-sub); font-size: 12px; margin-top: 46px; }
+@media (max-width: 640px) {
+  .trow { grid-template-columns: 48px repeat(5, 1fr); gap: 4px; }
+  .cell { padding: 6px 2px 5px; }
+  .cell .h { font-size: 19px; }
+  .clock small { font-size: 14px; }
+  .kana-pair .big { font-size: 48px; }
+  .kana-pair .small { font-size: 26px; }
+}
+</style>
+</head>
+<body>
+<div class="container">
+
+  <div class="top">
+    <a class="back" href="index.html">← 返回导航</a>
+    <div class="ctrl">
+      <button id="romajiToggle">🙈 隐藏罗马音（自测）</button>
+    </div>
+  </div>
+
+  <h1>五十音图</h1>
+  <p class="sub">日语发音基础 · 五十音 = 平假名 + 片假名 + 罗马音 · 点击任意假名可听发音并查看详解</p>
+  <div class="tip">💡 建议：先按「行」横着背（あいうえお…），再按「段」竖着背；点开每个假名可以看到它的汉字来源，联想记忆更快。点击「隐藏罗马音」可以自测。</div>
+
+  <div class="tabs">
+    <button class="tab active" data-tab="clear">清音 · 五十音</button>
+    <button class="tab" data-tab="dakuon">浊音 · 半浊音</button>
+    <button class="tab" data-tab="yoon">拗音</button>
+    <button class="tab" data-tab="know">知识要点</button>
+  </div>
+
+  <section class="panel show" id="tab-clear">
+    <div id="clearTables"></div>
+  </section>
+
+  <section class="panel" id="tab-dakuon">
+    <div class="sec-title">浊音 だくおん <small>「か・さ・た・は」行的假名右上角加两个点（゛）浊化，共 20 个</small></div>
+    <div id="dakuonTables"></div>
+    <div class="sec-title">半浊音 はんだくおん <small>「は」行右上角加小圈（゜），共 5 个</small></div>
+    <div id="handakuonTables"></div>
+  </section>
+
+  <section class="panel" id="tab-yoon">
+    <div class="sec-title">拗音 ようおん <small>「い段」假名 + 小写「ゃ/ゅ/ょ」组成一拍，共 33 个</small></div>
+    <div id="yoonTables"></div>
+  </section>
+
+  <section class="panel" id="tab-know">
+    <div class="cards">
+      <div class="kcard"><h3>五十音图是什么</h3><p>日语的<b>表音字母表</b>，相当于汉语拼音/英语字母。每个音有<b>平假名</b>（ひらがな，由汉字草书简化而来，圆润）和<b>片假名</b>（カタカナ，取汉字偏旁部首，方正，多用于外来语、拟声词）两种写法，发音相同。真正常用的清音是 <b>46 个</b>。</p></div>
+      <div class="kcard"><h3>行与段</h3><p>横着叫「<b>行</b>」（以子音命名：か行、さ行…），竖着叫「<b>段</b>」（以母音命名：あ段、い段…）。五十音是 <b>5 段 × 10 行</b> 的表格，动词按变形规则分为「五段动词」「一段动词」，语法书里的「上一段/下一段」就来自这张表。</p></div>
+      <div class="kcard"><h3>浊音（゛）</h3><p>か→<b class="eg">が</b>、さ→<b class="eg">ざ</b>、た→<b class="eg">だ</b>、は→<b class="eg">ば</b>，在假名右上角加两个点表示声带振动浊化。注意 <b class="eg">じ</b> 读 ji 而不是 zi，<b class="eg">ち</b> 的浊音 <b class="eg">ぢ</b> 现代基本读作 ji，很少使用。</p></div>
+      <div class="kcard"><h3>半浊音（゜）</h3><p>は→<b class="eg">ぱ</b> 行，右上角加小圆圈，读 p 音：ぱ・ぴ・ぷ・ぺ・ぽ。名字叫"半浊音"但发音其实是清音 p，如「<span class="eg">たべもの（食品）→ 商品名中常见</span>」「<span class="eg">ぽけっと（口袋）</span>」。</p></div>
+      <div class="kcard"><h3>促音 っ</h3><p>小写的「<b>っ/ッ</b>」不发音，表示<b>停顿一拍</b>，喉咙略收紧再爆发出后面的音。例：<span class="eg">きって（切手，邮票）</span>、<span class="eg">ざっし（雑志，杂志）</span>、<span class="eg">がっこう（学校）</span>。书写时要写得比正常つ<b>小</b>。</p></div>
+      <div class="kcard"><h3>长音</h3><p>把母音拉长两拍。规则：あ段后加<b>あ</b>（おかあさん）、い段加<b>い</b>（おにいさん）、う段加<b>う</b>（くうき）、え段多加<b>い</b>（せんせい）、お段多加<b>う</b>（おおきい）。<b>片假名统一用「ー」</b>表示长音：コーヒー（咖啡）、タイムカード。</p></div>
+      <div class="kcard"><h3>拨音 ん</h3><p>独立占一拍，且<b>不会出现在单词开头</b>。发音受后面音影响：在 ま/ば/ぱ 行前读 m，在 さ/た/な 行前读 n，其他情况读鼻音 ng。例：<span class="eg">しんぶん（新闻，报纸）</span>共 4 拍。</p></div>
+      <div class="kcard"><h3>易错发音</h3><p>① <b>し</b> 罗马音 shi，近似"西"不是"斯"；② <b>ち</b> 是 chi，<b>つ</b> 是 tsu，别读成"梯/秃"；③ <b>ふ</b> 介于 fu/hu 之间，双唇不要咬住；④ <b>う</b> 嘴唇微圆即可，不要撅成中文"乌"；⑤ <b>を</b> 与お同音，只作助词使用。</p></div>
+      <div class="kcard"><h3>声调（音调）</h3><p>日语没有中文的四声，只有<b>高低音调</b>（アクセント）：①头高型 ②中高型 ③尾高型 ④平板型等。同一个词音调不同意思可能不同，如 <span class="eg">はし</span>：①调=筷子，②调=桥。初期跟读模仿即可，不必死记音调核。</p></div>
+      <div class="kcard"><h3>记忆建议</h3><p>① 联想<b>来源汉字</b>记写法：あ←安、い←以、き←几；② 每天攻克 2 行，边写边读；③ 用单词巩固：あ←あめ（雨）、ね←ねこ（猫）；④ 顺序背完后打乱自测（点右上角「隐藏罗马音」）；⑤ 一周内完成首轮，之后每天默写一遍保持手感。</p></div>
+    </div>
+  </section>
+
+  <footer>五十音图详细版 · 点击假名听发音 · 数据内置无需联网</footer>
+</div>
+
+<!-- 详解弹窗 -->
+<div class="mask" id="mask">
+  <div class="modal">
+    <button class="close-x" id="closeX">✕</button>
+    <div class="kana-pair"><span class="big" id="dH"></span><span class="small" id="dK"></span></div>
+    <div class="romaji-big" id="dR"></div>
+    <div class="d-sec" id="dOrigin" style="display:none"><span class="lab">汉字来源</span><span id="dOriginText"></span></div>
+    <div class="d-sec" id="dWordSec"><span class="lab">例词</span><span class="word" id="dWord"></span></div>
+    <div class="d-sec" id="dNoteSec" style="display:none"><span class="lab">发音提示</span><span class="note" id="dNote"></span></div>
+    <button class="speak-btn" id="speakBtn">🔊 播放发音</button>
+  </div>
+</div>
+
+<script>
+/* ================= 数据 ================= */
+/* cell: h=平假名 k=片假名 r=罗马音 o=来源(平/片) w=[例词,罗马音,意思] note=发音提示 */
+const SEION = [
+  { label:'あ行', cells:[
+    { h:'あ', k:'ア', r:'a', o:['安','阿'], w:['あめ','ame','雨'] },
+    { h:'い', k:'イ', r:'i', o:['以','伊'], w:['いぬ','inu','狗'] },
+    { h:'う', k:'ウ', r:'u', o:['宇','宇'], w:['うみ','umi','海'], note:'嘴唇微圆即可，不要撅成中文"乌"' },
+    { h:'え', k:'エ', r:'e', o:['衣','江'], w:['えき','eki','车站'] },
+    { h:'お', k:'オ', r:'o', o:['於','於'], w:['おちゃ','ocha','茶'] },
+  ]},
+  { label:'か行', cells:[
+    { h:'か', k:'カ', r:'ka', o:['加','加'], w:['かさ','kasa','伞'] },
+    { h:'き', k:'キ', r:'ki', o:['几','几'], w:['きのこ','kinoko','蘑菇'] },
+    { h:'く', k:'ク', r:'ku', o:['久','久'], w:['くつ','kutsu','鞋'] },
+    { h:'け', k:'ケ', r:'ke', o:['计','介'], w:['けむり','kemuri','烟'] },
+    { h:'こ', k:'コ', r:'ko', o:['己','己'], w:['こども','kodomo','孩子'] },
+  ]},
+  { label:'さ行', cells:[
+    { h:'さ', k:'サ', r:'sa', o:['左','散'], w:['さかな','sakana','鱼'] },
+    { h:'し', k:'シ', r:'shi', o:['之','之'], w:['しろ','shiro','白色'], note:'罗马音 shi，近似"西"，不是"斯"' },
+    { h:'す', k:'ス', r:'su', o:['寸','须'], w:['すいか','suika','西瓜'], note:'词中时 u 常轻读，如 です 读 des' },
+    { h:'せ', k:'セ', r:'se', o:['世','世'], w:['せんせい','sensei','老师'] },
+    { h:'そ', k:'ソ', r:'so', o:['曾','曾'], w:['そら','sora','天空'] },
+  ]},
+  { label:'た行', cells:[
+    { h:'た', k:'タ', r:'ta', o:['太','多'], w:['たまご','tamago','鸡蛋'] },
+    { h:'ち', k:'チ', r:'chi', o:['知','千'], w:['ちず','chizu','地图'], note:'罗马音 chi，不是 ti' },
+    { h:'つ', k:'ツ', r:'tsu', o:['川','川'], w:['つき','tsuki','月亮'], note:'罗马音 tsu，类似"呲"，不是"秃"' },
+    { h:'て', k:'テ', r:'te', o:['天','天'], w:['てがみ','tegami','信'] },
+    { h:'と', k:'ト', r:'to', o:['止','止'], w:['とけい','tokei','钟表'] },
+  ]},
+  { label:'な行', cells:[
+    { h:'な', k:'ナ', r:'na', o:['奈','奈'], w:['なつ','natsu','夏天'] },
+    { h:'に', k:'ニ', r:'ni', o:['仁','二'], w:['にく','niku','肉'] },
+    { h:'ぬ', k:'ヌ', r:'nu', o:['奴','奴'], w:['ぬの','nuno','布'] },
+    { h:'ね', k:'ネ', r:'ne', o:['祢','祢'], w:['ねこ','neko','猫'] },
+    { h:'の', k:'ノ', r:'no', o:['乃','乃'], w:['のり','nori','海苔'] },
+  ]},
+  { label:'は行', cells:[
+    { h:'は', k:'ハ', r:'ha', o:['波','八'], w:['はな','hana','花'] },
+    { h:'ひ', k:'ヒ', r:'hi', o:['比','比'], w:['ひと','hito','人'], note:'近似"喝"与"嘿"之间，气流强' },
+    { h:'ふ', k:'フ', r:'fu', o:['不','不'], w:['ふね','fune','船'], note:'介于 fu/hu 之间，双唇轻拢不要咬唇' },
+    { h:'へ', k:'ヘ', r:'he', o:['部','部'], w:['へや','heya','房间'] },
+    { h:'ほ', k:'ホ', r:'ho', o:['保','保'], w:['ほし','hoshi','星星'] },
+  ]},
+  { label:'ま行', cells:[
+    { h:'ま', k:'マ', r:'ma', o:['末','末'], w:['まど','mado','窗户'] },
+    { h:'み', k:'ミ', r:'mi', o:['美','三'], w:['みず','mizu','水'] },
+    { h:'む', k:'ム', r:'mu', o:['武','牟'], w:['むし','mushi','虫'] },
+    { h:'め', k:'メ', r:'me', o:['女','女'], w:['めがね','megane','眼镜'] },
+    { h:'も', k:'モ', r:'mo', o:['毛','毛'], w:['もり','mori','森林'] },
+  ]},
+  { label:'や行', cells:[
+    { h:'や', k:'ヤ', r:'ya', o:['也','也'], w:['やま','yama','山'] },
+    null,
+    { h:'ゆ', k:'ユ', r:'yu', o:['由','由'], w:['ゆき','yuki','雪'] },
+    null,
+    { h:'よ', k:'ヨ', r:'yo', o:['与','与'], w:['よる','yoru','夜晚'] },
+  ]},
+  { label:'ら行', cells:[
+    { h:'ら', k:'ラ', r:'ra', o:['良','良'], w:['らくだ','rakuda','骆驼'] },
+    { h:'り', k:'リ', r:'ri', o:['利','利'], w:['りんご','ringo','苹果'] },
+    { h:'る', k:'ル', r:'ru', o:['留','流'], w:['るす','rusu','不在家'] },
+    { h:'れ', k:'レ', r:'re', o:['礼','礼'], w:['れきし','rekishi','历史'] },
+    { h:'ろ', k:'ロ', r:'ro', o:['吕','吕'], w:['ろく','roku','六'] },
+  ]},
+  { label:'わ行', cells:[
+    { h:'わ', k:'ワ', r:'wa', o:['和','和'], w:['わたし','watashi','我'] },
+    null, null, null,
+    { h:'を', k:'ヲ', r:'o', o:['遠','远'], w:['パンを食べる','pan o taberu','吃面包（を作宾语助词）'], note:'与お同音，现代只作宾语助词使用' },
+  ]},
+  { label:'拨音', cells:[
+    { h:'ん', k:'ン', r:'n', o:['无','尔'], w:['ぱん','pan','面包'], note:'独立占一拍，不出现在词头；受后音影响读 m/n/ng' },
+  ]},
+];
+
+const DAKUON = [
+  { label:'が行', cells:[
+    { h:'が', k:'ガ', r:'ga', w:['がっこう','gakkou','学校'] },
+    { h:'ぎ', k:'ギ', r:'gi', w:['ぎんこう','ginkou','银行'] },
+    { h:'ぐ', k:'グ', r:'gu', w:['ぐあい','guai','情况'] },
+    { h:'げ', k:'ゲ', r:'ge', w:['げんき','genki','精神好'] },
+    { h:'ご', k:'ゴ', r:'go', w:['ごはん','gohan','米饭'] },
+  ]},
+  { label:'ざ行', cells:[
+    { h:'ざ', k:'ザ', r:'za', w:['ざっし','zasshi','杂志'] },
+    { h:'じ', k:'ジ', r:'ji', w:['じかん','jikan','时间'], note:'读 ji，不是 zi' },
+    { h:'ず', k:'ズ', r:'zu', w:['ずっと','zutto','一直'] },
+    { h:'ぜ', k:'ゼ', r:'ze', w:['ぜんぶ','zenbu','全部'] },
+    { h:'ぞ', k:'ゾ', r:'zo', w:['ぞう','zou','大象'] },
+  ]},
+  { label:'だ行', cells:[
+    { h:'だ', k:'ダ', r:'da', w:['だいがく','daigaku','大学'] },
+    { h:'ぢ', k:'ヂ', r:'ji', w:['はなぢ','hanaji','鼻血'], note:'现代读音同 じ，极少使用' },
+    { h:'づ', k:'ヅ', r:'zu', w:['つづく','tsuzuku','继续'], note:'现代读音同 ず，极少使用' },
+    { h:'で', k:'デ', r:'de', w:['でんしゃ','densha','电车'] },
+    { h:'ど', k:'ド', r:'do', w:['どあ','doa','门'] },
+  ]},
+  { label:'ば行', cells:[
+    { h:'ば', k:'バ', r:'ba', w:['ばん','ban','晚上'] },
+    { h:'び', k:'ビ', r:'bi', w:['びょういん','byouin','医院'] },
+    { h:'ぶ', k:'ブ', r:'bu', w:['ぶた','buta','猪'] },
+    { h:'べ', k:'ベ', r:'be', w:['べんきょう','benkyou','学习'] },
+    { h:'ぼ', k:'ボ', r:'bo', w:['ぼうし','boushi','帽子'] },
+  ]},
+];
+
+const HANDAKUON = [
+  { label:'ぱ行', cells:[
+    { h:'ぱ', k:'パ', r:'pa', w:['ぱん','pan','面包'] },
+    { h:'ぴ', k:'ピ', r:'pi', w:['ぴかぴか','pika pika','闪闪发光'] },
+    { h:'ぷ', k:'プ', r:'pu', w:['ぷりん','purin','布丁'] },
+    { h:'ぺ', k:'ペ', r:'pe', w:['ぺん','pen','钢笔'] },
+    { h:'ぽ', k:'ポ', r:'po', w:['ぽけっと','poketto','口袋'] },
+  ]},
+];
+
+const YOON = [
+  { label:'清拗音', cells:[
+    { h:'きゃ', k:'キャ', r:'kya', w:['きゃく','kyaku','客人'] },
+    { h:'きゅ', k:'キュ', r:'kyu', w:['きゅう','kyuu','九'] },
+    { h:'きょ', k:'キョ', r:'kyo', w:['きょう','kyou','今天'] },
+    { h:'しゃ', k:'シャ', r:'sha', w:['しゃしん','shashin','照片'] },
+    { h:'しゅ', k:'シュ', r:'shu', w:['しゅみ','shumi','爱好'] },
+    { h:'しょ', k:'ショ', r:'sho', w:['しょくじ','shokuji','饭菜'] },
+    { h:'ちゃ', k:'チャ', r:'cha', w:['ちゃわん','chawan','碗'] },
+    { h:'ちゅ', k:'チュ', r:'chu', w:['ちゅうしゃ','chuusha','停车'] },
+    { h:'ちょ', k:'チョ', r:'cho', w:['ちょっと','chotto','稍微'] },
+    { h:'にゃ', k:'ニャ', r:'nya', w:['にゃんこ','nyanko','猫咪'] },
+    { h:'にゅ', k:'ニュ', r:'nyu', w:['ニュース','nyuusu','新闻'] },
+    { h:'にょ', k:'ニョ', r:'nyo', w:['にょきにょき','nyoki nyoki','接连冒出（拟态词）'], note:'にょ很少单独成词，多见于拟态词' },
+    { h:'ひゃ', k:'ヒャ', r:'hya', w:['ひゃく','hyaku','一百'] },
+    { h:'ひゅ', k:'ヒュ', r:'hyu', w:['ヒューマン','hyuuman','人类'] },
+    { h:'ひょ', k:'ヒョ', r:'hyo', w:['ひょう','hyou','表格'] },
+    { h:'みゃ', k:'ミャ', r:'mya', w:['みゃく','myaku','脉搏'] },
+    { h:'みゅ', k:'ミュ', r:'myu', w:['ミュージック','myuujikku','音乐'] },
+    { h:'みょ', k:'ミョ', r:'myo', w:['みょうじ','myouji','姓氏'] },
+    { h:'りゃ', k:'リャ', r:'rya', w:['りゃくご','ryakugo','缩略语'] },
+    { h:'りゅ', k:'リュ', r:'ryu', w:['りゅうがく','ryuugaku','留学'] },
+    { h:'りょ', k:'リョ', r:'ryo', w:['りょうり','ryouri','做饭'] },
+  ]},
+  { label:'浊拗音', cells:[
+    { h:'ぎゃ', k:'ギャ', r:'gya', w:['ぎゃく','gyaku','相反'] },
+    { h:'ぎゅ', k:'ギュ', r:'gyu', w:['ぎゅうにく','gyuuniku','牛肉'] },
+    { h:'ぎょ', k:'ギョ', r:'gyo', w:['ぎょうざ','gyouza','饺子'] },
+    { h:'じゃ', k:'ジャ', r:'ja', w:['じゃがいも','jagaimo','土豆'] },
+    { h:'じゅ', k:'ジュ', r:'ju', w:['じゅう','juu','十'] },
+    { h:'じょ', k:'ジョ', r:'jo', w:['じょうず','jouzu','擅长'] },
+    { h:'びゃ', k:'ビャ', r:'bya', note:'很少单独成词，多见于外来语' },
+    { h:'びゅ', k:'ビュ', r:'byu', w:['ビューティー','byuutii','美丽'] },
+    { h:'びょ', k:'ビョ', r:'byo', note:'很少单独成词，多见于外来语' },
+    { h:'ぴゃ', k:'ピャ', r:'pya', w:['ぴゃっ','pya','拟声词'] },
+    { h:'ぴゅ', k:'ピュ', r:'pyu', w:['ピュア','pyua','纯真'] },
+    { h:'ぴょ', k:'ピョ', r:'pyo', w:['ぴょんぴょん','pyon pyon','蹦蹦跳跳'] },
+  ]},
+];
+
+/* ================= 渲染 ================= */
+const $ = s => document.querySelector(s);
+function esc(s){ return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+function chunk5(cells) {
+  const rows = [];
+  for (let i = 0; i < cells.length; i += 5) rows.push(cells.slice(i, i + 5));
+  return rows;
+}
+function renderTable(groups, mountId) {
+  $(mountId).innerHTML = groups.map(g =>
+    `<div class="table">` + chunk5(g.cells).map(row =>
+      `<div class="trow"><div class="rlabel">${esc(g.label)}</div>` + row.map(c =>
+        c ? `<button class="cell" data-h="${esc(c.h)}"><span class="h">${esc(c.h)}</span><span class="k">${esc(c.k)}</span><span class="r">${esc(c.r)}</span></button>`
+          : `<div class="cell blank"></div>`
+      ).join('') + `</div>`
+    ).join('') + `</div>`
+  ).join('');
+}
+
+renderTable(SEION, '#clearTables');
+renderTable(DAKUON, '#dakuonTables');
+renderTable(HANDAKUON, '#handakuonTables');
+renderTable(YOON, '#yoonTables');
+
+/* ================= 详情弹窗 ================= */
+let current = null;
+document.addEventListener('click', e => {
+  const cell = e.target.closest('.cell[data-h]');
+  if (!cell) return;
+  const h = cell.dataset.h;
+  for (const g of [...SEION, ...DAKUON, ...HANDAKUON, ...YOON]) {
+    for (const c of g.cells) {
+      if (c && c.h === h) { current = c; showDetail(c); return; }
+    }
+  }
+});
+
+function showDetail(c) {
+  $('#dH').textContent = c.h;
+  $('#dK').textContent = c.k;
+  $('#dR').textContent = c.r;
+  if (c.o) {
+    $('#dOrigin').style.display = '';
+    $('#dOriginText').innerHTML = `平假名「${esc(c.h)}」源自汉字「<b>${esc(c.o[0])}</b>」的草书；片假名「${esc(c.k)}」取自「<b>${esc(c.o[1])}</b>」的一部分。联想这两个汉字，写法就不容易忘。`;
+  } else {
+    $('#dOrigin').style.display = 'none';
+  }
+  if (c.w && c.w[2] && c.w[2] !== '—') {
+    $('#dWordSec').style.display = '';
+    $('#dWord').innerHTML = `<b>${esc(c.w[0])}</b>（${esc(c.w[1])}）＝ ${esc(c.w[2])}`;
+  } else {
+    $('#dWordSec').style.display = 'none';
+  }
+  if (c.note) {
+    $('#dNoteSec').style.display = '';
+    $('#dNote').textContent = c.note;
+  } else {
+    $('#dNoteSec').style.display = 'none';
+  }
+  $('#mask').classList.add('show');
+  speak(c.h);
+}
+
+$('#speakBtn').onclick = () => { if (current) speak(current.h); };
+$('#closeX').onclick = () => $('#mask').classList.remove('show');
+$('#mask').addEventListener('click', e => { if (e.target === $('#mask')) $('#mask').classList.remove('show'); });
+document.addEventListener('keydown', e => { if (e.key === 'Escape') $('#mask').classList.remove('show'); });
+
+/* ================= 语音 ================= */
+function speak(text) {
+  if (!('speechSynthesis' in window)) return;
+  speechSynthesis.cancel();
+  const u = new SpeechSynthesisUtterance(text);
+  u.lang = 'ja-JP';
+  u.rate = 0.75;
+  speechSynthesis.speak(u);
+}
+
+/* ================= 标签页 & 罗马音开关 ================= */
+document.querySelectorAll('.tab').forEach(t => t.onclick = () => {
+  document.querySelectorAll('.tab').forEach(x => x.classList.toggle('active', x === t));
+  document.querySelectorAll('.panel').forEach(p => p.classList.toggle('show', p.id === 'tab-' + t.dataset.tab));
+});
+$('#romajiToggle').onclick = () => {
+  document.body.classList.toggle('hide-romaji');
+  const hidden = document.body.classList.contains('hide-romaji');
+  $('#romajiToggle').textContent = hidden ? '👀 显示罗马音' : '🙈 隐藏罗马音（自测）';
+};
+</script>
+</body>
+</html>

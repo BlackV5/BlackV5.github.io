@@ -235,6 +235,7 @@ footer { text-align: center; color: var(--text-sub); font-size: 12px; margin-top
       <div class="engine-tabs" id="engineTabs">
         <span data-e="bing" class="active">必应</span>
         <span data-e="baidu">百度</span>
+        <span data-e="sogou">搜狗</span>
         <span data-e="github">GitHub</span>
       </div>
       <div class="search-box">
@@ -318,6 +319,7 @@ const DEFAULT_SITES = [
   { name:'Gitee',       url:'https://gitee.com',                            cat:'开发', desc:'码云 · 国内代码托管', icon:'' },
   { name:'日语学习(有读音)', url:'riyu.html',                               cat:'学习', desc:'本地日语学习页', icon:'🇯🇵' },
   { name:'日语学习(无读音)', url:'riyu2.html',                              cat:'学习', desc:'本地日语学习页', icon:'🇯🇵' },
+  { name:'日语学习(新)', url:'riyu3.html',                                  cat:'学习', desc:'五十音图完整学习', icon:'🇯🇵' },
   { name:'打砖块',      url:'breakout.html',                                cat:'游戏', desc:'Breakout 小游戏', icon:'🧱' },
 ];
 
@@ -434,6 +436,7 @@ function bindSiteEvents() {
 const ENGINE_URLS = {
   bing:   'https://cn.bing.com/search?q=',
   baidu:  'https://www.baidu.com/s?wd=',
+  sogou:  'https://www.sogou.com/web?query=',
   github: 'https://github.com/search?q=',
 };
 let engine = 'bing';
