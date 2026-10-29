@@ -1,110 +1,678 @@
 <!DOCTYPE html>
 <html lang="zh-CN">
 <head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>网址导航 - 首页</title>
-  <link rel="icon" href="./res/logo.png" sizes="16x16">
-  <style>
-    body {
-        background-color:#ffffff;
-        margin: 0;
-        padding: 20px;
-        font-family: "Microsoft YaHei", "幼圆", YouYuan, sans-serif;
-        text-align: center;
-    }
-    
-    .header {
-        margin-bottom: 30px;
-    }
-    
-    .section-title {
-        background-color:#fcfcfc;
-        padding: 10px;
-        display: inline-block;
-        border-radius: 5px;
-    }
-    
-    .nav-container {
-        max-width: 1000px;
-        margin: 0 auto;
-        padding: 20px;
-    }
-    
-    .nav-links {
-        margin: 30px 0;
-    }
-    
-    .nav-link {
-        font-size: 16px;
-        padding: 8px 25px;
-        margin: 8px;
-        border: 2px solid #f0f0f0;
-        border-radius: 15px;
-        text-decoration: none;
-        display: inline-block;
-        transition: all 0.2s ease;
-    }
-    
-    .nav-link:link    {color:#000000;}
-    .nav-link:visited {color:#dd1ce4;}
-    .nav-link:hover   {
-        color:#0000FF;
-        border-color: #d0e8ff;
-        transform: translateY(-2px);
-    }
-    .nav-link:active  {color:#FF0000;}
-    
-    .browser-info {
-        margin-top: 40px;
-        padding: 15px;
-        background-color: #f8f8f8;
-        border-radius: 5px;
-        display: inline-block;
-    }
-    
-    .footer {
-        margin-top: 30px;
-        color: #666;
-        font-size: 14px;
-    }
-    
-    .japanese-link {
-        background-color: #f0f9ff;
-        border-color: #bae0ff;
-    }
-  </style>
-</head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>我的导航 · NavHub</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🧭</text></svg>">
+<style>
+:root {
+  --bg: #f5f6f8;
+  --card: #ffffff;
+  --card-hover: #ffffff;
+  --text: #24292f;
+  --text-sub: #6b7280;
+  --border: #e5e7eb;
+  --shadow: 0 1px 3px rgba(0,0,0,.05);
+  --shadow-hover: 0 4px 14px rgba(0,0,0,.10);
+  --primary: #2b5bd7;
+  --danger: #e5484d;
+  --chip-bg: #f0f1f3;
+  --chip-active-bg: #2b5bd7;
+  --chip-active-text: #fff;
+  --modal-mask: rgba(0,0,0,.45);
+  --input-bg: #f5f6f8;
+  --radius: 8px;
+}
+html[data-theme="dark"] {
+  --bg: #17191d;
+  --card: #22252b;
+  --card-hover: #262a31;
+  --text: #e6e8eb;
+  --text-sub: #9aa1ab;
+  --border: rgba(255,255,255,.10);
+  --shadow: 0 1px 3px rgba(0,0,0,.25);
+  --shadow-hover: 0 4px 14px rgba(0,0,0,.4);
+  --chip-bg: #2a2e35;
+  --chip-active-bg: #2b5bd7;
+  --modal-mask: rgba(0,0,0,.6);
+  --input-bg: #17191d;
+}
+* { margin: 0; padding: 0; box-sizing: border-box; }
+body {
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Microsoft YaHei", sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  transition: background .3s, color .3s;
+}
+body::before { content: none; }
+.container { max-width: 1180px; margin: 0 auto; padding: 28px 20px 60px; }
 
+/* ===== 顶栏 ===== */
+.topbar { display: flex; justify-content: space-between; align-items: center; margin-bottom: 22px; }
+.brand { display: flex; align-items: center; gap: 10px; font-size: 20px; font-weight: 700; }
+.brand .ver {
+  font-size: 11px; font-weight: 600; color: var(--primary);
+  background: var(--chip-bg); border-radius: 999px; padding: 2px 9px; letter-spacing: .5px;
+}
+.group-ops { margin-left: auto; display: flex; gap: 5px; opacity: 0; transition: .2s; }
+.group:hover .group-ops { opacity: 1; }
+.info-list { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+#infoModal .modal { max-width: 780px; }
+#infoModal .modal h3 { margin-bottom: 14px; }
+#infoModal .modal-foot { margin-top: 14px; }
+.info-row {
+  display: flex; justify-content: space-between; align-items: center; gap: 14px;
+  font-size: 13.5px; padding: 10px 13px; background: var(--input-bg); border-radius: 8px;
+}
+.info-row.wide { grid-column: 1 / -1; align-items: flex-start; }
+.info-row .k { color: var(--text-sub); flex-shrink: 0; }
+.info-row .v { text-align: right; word-break: break-all; font-weight: 600; }
+@media (max-width: 640px) { .info-list { grid-template-columns: 1fr; } }
+.brand .logo {
+  width: 38px; height: 38px; border-radius: 8px; display: grid; place-items: center;
+  background: var(--primary); font-size: 19px;
+}
+.top-actions { display: flex; gap: 10px; }
+.icon-btn {
+  width: 38px; height: 38px; border-radius: 11px; border: 1px solid var(--border);
+  background: var(--card); color: var(--text); cursor: pointer; font-size: 16px;
+  display: grid; place-items: center; box-shadow: var(--shadow); transition: .2s;
+}
+.icon-btn:hover { transform: translateY(-2px); box-shadow: var(--shadow-hover); }
+
+/* ===== 搜索区 ===== */
+.hero { text-align: center; margin-bottom: 26px; }
+.greeting { font-size: 15px; color: var(--text-sub); margin-top: 8px; }
+.clock { font-size: 44px; font-weight: 700; letter-spacing: 1px; }
+.clock small { font-size: 17px; font-weight: 400; color: var(--text-sub); margin-left: 12px; }
+.search-wrap { max-width: 600px; margin: 20px auto 0; }
+.engine-tabs {
+  display: flex; gap: 20px; justify-content: flex-start; padding: 0 8px; margin-bottom: 6px;
+  font-size: 13px;
+}
+.engine-tabs span { color: var(--text-sub); cursor: pointer; }
+.engine-tabs span:hover { color: var(--primary); }
+.engine-tabs span.active { color: var(--primary); font-weight: 600; }
+.search-box {
+  display: flex; align-items: center;
+  background: var(--card); border: 2px solid var(--primary); border-radius: 8px;
+  padding: 4px 4px 4px 18px; box-shadow: var(--shadow); transition: .2s;
+}
+.search-box:focus-within { box-shadow: var(--shadow-hover); border-color: var(--primary); }
+.search-box input {
+  flex: 1; border: none; outline: none; background: transparent; font-size: 15px;
+  color: var(--text); padding: 8px 0;
+}
+.search-btn {
+  border: none; cursor: pointer; color: #fff; font-size: 14px; font-weight: 600;
+  padding: 10px 24px; border-radius: 8px;
+  background: var(--primary);
+  transition: .15s;
+}
+.search-btn:hover { background: #1e4ab8; }
+
+/* ===== 分类 chips ===== */
+.chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 26px 0 8px; }
+.chip {
+  border: none; background: transparent; color: var(--text-sub);
+  border-radius: 6px; padding: 6px 14px; font-size: 13.5px; cursor: pointer; transition: .15s;
+}
+.chip:hover { color: var(--primary); background: var(--chip-bg); }
+.chip.active { background: var(--chip-active-bg); color: var(--chip-active-text); font-weight: 600; }
+
+/* ===== 站点卡片 ===== */
+.group { margin-top: 26px; }
+.group-head { display: flex; align-items: center; gap: 8px; margin-bottom: 12px; }
+.group-head h2 { font-size: 16px; font-weight: 700; }
+.group-head .count { font-size: 12px; color: var(--text-sub); background: var(--chip-bg); padding: 2px 10px; border-radius: 999px; }
+.group-head .del-cat { margin-left: auto; }
+.grid {
+  display: grid; gap: 2px 6px;
+  grid-template-columns: repeat(auto-fill, minmax(112px, 1fr));
+}
+.site {
+  position: relative; display: flex; align-items: center; gap: 8px;
+  background: transparent; border: 1px solid transparent; border-radius: 6px;
+  padding: 8px 10px; text-decoration: none; color: var(--text);
+  transition: .15s; cursor: pointer;
+}
+.site:hover { background: var(--chip-bg); }
+.site:hover .name { color: var(--primary); }
+.site.dragging { opacity: .4; }
+.site.drag-over { border-color: var(--primary); border-style: dashed; }
+.site .fav {
+  width: 18px; height: 18px; border-radius: 4px; flex-shrink: 0; object-fit: contain;
+}
+.site .fav.letter {
+  display: grid; place-items: center; font-weight: 700; font-size: 11px;
+  color: var(--primary); background: var(--chip-bg);
+}
+.site .info { min-width: 0; }
+.site .name { font-size: 13.5px; font-weight: 400; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.site .desc { display: none; }
+.site .ops {
+  position: absolute; top: 6px; right: 6px; display: none; gap: 4px;
+}
+.site:hover .ops { display: flex; }
+.op-btn {
+  width: 22px; height: 22px; border-radius: 6px; border: none; cursor: pointer;
+  background: var(--input-bg); color: var(--text-sub); font-size: 11px; display: grid; place-items: center;
+}
+.op-btn:hover { background: var(--primary); color: #fff; }
+.op-btn.danger:hover { background: var(--danger); }
+.empty-tip { text-align: center; color: var(--text-sub); padding: 40px 0; font-size: 14px; }
+
+/* ===== 按钮 ===== */
+.btn {
+  border: none; cursor: pointer; font-size: 13.5px; font-weight: 600; border-radius: 10px;
+  padding: 9px 18px; transition: .2s;
+}
+.btn-primary { background: var(--primary); color: #fff; }
+.btn-primary:hover { background: #1e4ab8; }
+.btn-ghost { background: var(--input-bg); color: var(--text); border: 1px solid var(--border); }
+.btn-ghost:hover { border-color: var(--primary); color: var(--primary); }
+.btn-danger { background: var(--danger); color: #fff; }
+.add-wrap { text-align: center; margin-top: 34px; }
+
+/* ===== 弹窗 ===== */
+.modal-mask {
+  position: fixed; inset: 0; background: var(--modal-mask); z-index: 100;
+  display: none; align-items: center; justify-content: center; padding: 20px;
+  backdrop-filter: blur(4px);
+}
+.modal-mask.show { display: flex; }
+.modal {
+  background: var(--card); border-radius: 18px; width: 100%; max-width: 430px;
+  padding: 26px; box-shadow: 0 20px 60px rgba(0,0,0,.25); animation: pop .25s ease;
+  max-height: 85vh; overflow-y: auto;
+}
+@keyframes pop { from { transform: scale(.94); opacity: 0; } to { transform: scale(1); opacity: 1; } }
+.modal h3 { font-size: 17px; margin-bottom: 18px; }
+.field { margin-bottom: 14px; }
+.field label { display: block; font-size: 12.5px; color: var(--text-sub); margin-bottom: 6px; font-weight: 600; }
+.field input, .field select {
+  width: 100%; border: 1px solid var(--border); background: var(--input-bg); color: var(--text);
+  border-radius: 10px; padding: 10px 12px; font-size: 14px; outline: none; transition: .2s;
+}
+.field input:focus, .field select:focus { border-color: var(--primary); }
+.modal-foot { display: flex; gap: 10px; justify-content: flex-end; margin-top: 20px; }
+.row2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+/* ===== Toast ===== */
+#toast {
+  position: fixed; bottom: 30px; left: 50%; transform: translateX(-50%) translateY(80px);
+  background: var(--text); color: var(--bg); padding: 11px 22px; border-radius: 999px;
+  font-size: 13.5px; z-index: 200; opacity: 0; transition: .3s; pointer-events: none;
+  box-shadow: 0 8px 24px rgba(0,0,0,.2);
+}
+#toast.show { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+footer { text-align: center; color: var(--text-sub); font-size: 12px; margin-top: 50px; }
+@media (max-width: 560px) {
+  .grid { grid-template-columns: repeat(auto-fill, minmax(130px, 1fr)); }
+  .clock { font-size: 24px; }
+}
+</style>
+</head>
 <body>
-  <div class="header">
-    <h1>网址导航</h1>
-    <div class="section-title">快捷功能</div>
-  </div>
-  <!-- _blank：新标签页
-      _self ：自身打开
-  -->
-  <div class="nav-container">
-    <div class="nav-links">
-      <a href="https://cn.bing.com" target="_blank" class="nav-link">必应</a>
-      <a href="https://www.baidu.com" target="_blank" class="nav-link">百度</a>
-      <a href="https://github.com/" target="_blank" class="nav-link">GitHub</a>
-      <a href="https://gitee.com/" target="_blank" class="nav-link">Gitee</a>
-      <a href="https://mail.qq.com/" target="_blank" class="nav-link">QQ邮箱</a>
-      <a href="https://mail.163.com/" target="_blank" class="nav-link">163邮箱</a>
-      <a href="https://map.amap.com/subway/index.html?&4403" target="_blank" class="nav-link">深圳地铁图(高德)</a>
-      <a href="https://www.bilibili.com/" target="_blank" class="nav-link">哔哩哔哩动画</a>
-      <a href="https://www.ithome.com/" target="_blank" class="nav-link">IT之家</a>
-      <a href="riyu.html" target="_self" class="nav-link japanese-link">日语学习(有读音)</a>
-      <a href="riyu2.html" target="_self" class="nav-link japanese-link">日语学习(无读音)</a>
-    </div>
-    
-    <div class="browser-info">
-      <b>当前使用的浏览器信息：</b><br>
-      <script>document.write(navigator.userAgent);</script>
+<div class="container">
+
+  <div class="topbar">
+    <div class="brand"><div class="logo">🧭</div>NavHub<span class="ver">V1.3</span></div>
+    <div class="top-actions">
+      <button class="icon-btn" id="infoBtn" title="浏览器信息">💻</button>
+      <button class="icon-btn" id="themeBtn" title="切换主题">🌙</button>
+      <button class="icon-btn" id="menuBtn" title="数据管理">⚙️</button>
     </div>
   </div>
-  
-  <div class="footer">V1.2</div>
+
+  <div class="hero">
+    <div class="clock" id="clock"></div>
+    <div class="greeting" id="greeting"></div>
+    <div class="search-wrap">
+      <div class="engine-tabs" id="engineTabs">
+        <span data-e="bing" class="active">必应</span>
+        <span data-e="baidu">百度</span>
+        <span data-e="github">GitHub</span>
+      </div>
+      <div class="search-box">
+        <input id="searchInput" type="text" placeholder="搜索或输入网址…" autocomplete="off">
+        <button class="search-btn" id="searchBtn">搜索</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="chips" id="chips"></div>
+  <div id="groups"></div>
+
+  <div class="add-wrap">
+    <button class="btn btn-primary" id="addSiteBtn">＋ 添加网站</button>
+    <button class="btn btn-ghost" id="addCatBtn">新建分类</button>
+  </div>
+
+  <footer id="footer">NavHub · 数据保存在浏览器本地 · 部署于 GitHub Pages</footer>
+</div>
+
+<!-- 站点编辑弹窗 -->
+<div class="modal-mask" id="siteModal">
+  <div class="modal">
+    <h3 id="siteModalTitle">添加网站</h3>
+    <div class="field"><label>网站名称 *</label><input id="fName" placeholder="例如：GitHub"></div>
+    <div class="field"><label>网址 *</label><input id="fUrl" placeholder="https://github.com"></div>
+    <div class="field"><label>描述（可选）</label><input id="fDesc" placeholder="一句话介绍"></div>
+    <div class="row2">
+      <div class="field"><label>分类</label><select id="fCat"></select></div>
+      <div class="field"><label>图标（可选）</label><input id="fIcon" placeholder="emoji 或留空自动获取"></div>
+    </div>
+    <div class="modal-foot">
+      <button class="btn btn-ghost" data-close>取消</button>
+      <button class="btn btn-primary" id="saveSiteBtn">保存</button>
+    </div>
+  </div>
+</div>
+
+<!-- 设置弹窗 -->
+<div class="modal-mask" id="setModal">
+  <div class="modal">
+    <h3>数据管理</h3>
+    <p style="font-size:13px;color:var(--text-sub);line-height:1.7;margin-bottom:16px;">
+      所有数据保存在浏览器 localStorage 中。换电脑或清缓存前，建议先导出备份；在新设备上导入即可恢复。
+    </p>
+    <div style="display:flex;flex-wrap:wrap;gap:10px;">
+      <button class="btn btn-primary" id="exportBtn">⬇ 导出数据</button>
+      <button class="btn btn-ghost" id="importBtn">⬆ 导入数据</button>
+      <button class="btn btn-danger" id="resetBtn">恢复默认</button>
+    </div>
+    <input type="file" id="importFile" accept=".json" style="display:none">
+    <div class="modal-foot"><button class="btn btn-ghost" data-close>关闭</button></div>
+  </div>
+</div>
+
+<!-- 浏览器信息弹窗 -->
+<div class="modal-mask" id="infoModal">
+  <div class="modal">
+    <h3>🖥️ 浏览器信息</h3>
+    <div id="infoList" class="info-list"></div>
+    <div class="modal-foot"><button class="btn btn-primary" data-close>好的</button></div>
+  </div>
+</div>
+
+<div id="toast"></div>
+
+<script>
+/* ================= 数据 ================= */
+const LS_SITES = 'navhub_sites', LS_CATS = 'navhub_cats', LS_THEME = 'navhub_theme';
+
+const DEFAULT_CATS = ['常用', '开发', '学习', '游戏'];
+const DEFAULT_SITES = [
+  { name:'百度',        url:'https://www.baidu.com',                        cat:'常用', desc:'搜索引擎', icon:'' },
+  { name:'必应',        url:'https://cn.bing.com',                          cat:'常用', desc:'微软搜索', icon:'' },
+  { name:'QQ邮箱',      url:'https://mail.qq.com',                          cat:'常用', desc:'腾讯邮箱', icon:'' },
+  { name:'163邮箱',     url:'https://mail.163.com',                         cat:'常用', desc:'网易邮箱', icon:'' },
+  { name:'哔哩哔哩',    url:'https://www.bilibili.com',                     cat:'常用', desc:'视频弹幕网站', icon:'' },
+  { name:'IT之家',      url:'https://www.ithome.com',                       cat:'常用', desc:'科技数码资讯', icon:'' },
+  { name:'深圳地铁图',  url:'https://map.amap.com/subway/index.html?&4403', cat:'常用', desc:'高德地铁线路', icon:'' },
+  { name:'GitHub',      url:'https://github.com',                           cat:'开发', desc:'全球最大代码托管', icon:'' },
+  { name:'Gitee',       url:'https://gitee.com',                            cat:'开发', desc:'码云 · 国内代码托管', icon:'' },
+  { name:'日语学习(有读音)', url:'riyu.html',                               cat:'学习', desc:'本地日语学习页', icon:'🇯🇵' },
+  { name:'日语学习(无读音)', url:'riyu2.html',                              cat:'学习', desc:'本地日语学习页', icon:'🇯🇵' },
+  { name:'打砖块',      url:'breakout.html',                                cat:'游戏', desc:'Breakout 小游戏', icon:'🧱' },
+];
+
+let sites = load(LS_SITES, null);
+if (!sites) { sites = DEFAULT_SITES.slice(); save(LS_SITES, sites); }
+let cats = load(LS_CATS, null);
+if (!cats) { cats = DEFAULT_CATS.slice(); save(LS_CATS, cats); }
+
+function load(k, def) { try { return JSON.parse(localStorage.getItem(k)); } catch(e){ return def; } }
+function save(k, v) { localStorage.setItem(k, JSON.stringify(v)); }
+
+/* ================= 状态 ================= */
+let activeCat = '全部';
+let filterText = '';
+let editIndex = -1; // -1 = 新增
+
+/* ================= 工具 ================= */
+const $ = s => document.querySelector(s);
+function toast(msg) {
+  const t = $('#toast'); t.textContent = msg; t.classList.add('show');
+  clearTimeout(t._tm); t._tm = setTimeout(() => t.classList.remove('show'), 1800);
+}
+function hostOf(url) { try { return new URL(url).hostname; } catch(e){ return ''; } }
+function esc(s) { return String(s).replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c])); }
+
+/* ================= 渲染 ================= */
+function render() {
+  // chips
+  const allCats = ['全部', ...cats];
+  $('#chips').innerHTML = allCats.map(c =>
+    `<button class="chip ${c===activeCat?'active':''}" data-cat="${esc(c)}">${esc(c)}</button>`).join('');
+  document.querySelectorAll('.chip').forEach(el =>
+    el.onclick = () => { activeCat = el.dataset.cat; render(); });
+
+  // groups
+  const kw = filterText.trim().toLowerCase();
+  const wrap = $('#groups');
+  let html = '';
+  const catList = activeCat === '全部' ? cats : [activeCat];
+  let totalShown = 0;
+  for (const cat of catList) {
+    const list = sites.map((s, i) => ({ ...s, _i: i }))
+      .filter(s => s.cat === cat)
+      .filter(s => !kw || s.name.toLowerCase().includes(kw) || (s.desc||'').toLowerCase().includes(kw) || s.url.toLowerCase().includes(kw));
+    if (!list.length) continue;
+    totalShown += list.length;
+    html += `<div class="group">
+      <div class="group-head"><h2>${esc(cat)}</h2><span class="count">${list.length}</span>
+        <div class="group-ops">
+          <button class="op-btn" data-rename-cat="${esc(cat)}" title="重命名分类">✎</button>
+          <button class="op-btn danger" data-del-cat="${esc(cat)}" title="删除分类">✕</button>
+        </div>
+      </div>
+      <div class="grid" data-cat="${esc(cat)}">` +
+      list.map(s => {
+        const isLocal = !/^https?:/i.test(s.url);
+        const iconHtml = s.icon
+          ? `<div class="fav letter" style="background:none;font-size:16px;padding:0;">${esc(s.icon)}</div>`
+          : isLocal
+            ? `<div class="fav letter">📄</div>`
+            : `<img class="fav" src="https://api.iowen.cn/favicon/${encodeURIComponent(hostOf(s.url))}.png" onerror="this.outerHTML='<div class=&quot;fav letter&quot;>${esc((s.name[0]||'？').toUpperCase())}</div>'">`;
+        return `<a class="site" href="${esc(s.url)}" target="_blank" rel="noopener" draggable="true" data-idx="${s._i}" title="${esc(s.desc || s.url)}">
+          ${iconHtml}
+          <div class="info"><div class="name">${esc(s.name)}</div><div class="desc">${esc(s.desc || hostOf(s.url))}</div></div>
+          <div class="ops">
+            <button class="op-btn" data-edit="${s._i}" title="编辑">✎</button>
+            <button class="op-btn danger" data-del="${s._i}" title="删除">✕</button>
+          </div>
+        </a>`;
+      }).join('') +
+      `</div></div>`;
+  }
+  if (!totalShown) html = `<div class="empty-tip">🫧 没有找到匹配的网站${kw ? '，换个关键词试试' : '，点击下方按钮添加吧'}</div>`;
+  wrap.innerHTML = html;
+
+  bindSiteEvents();
+}
+
+function bindSiteEvents() {
+  document.querySelectorAll('[data-edit]').forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); openSiteModal(+b.dataset.edit); });
+  document.querySelectorAll('[data-del]').forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); delSite(+b.dataset.del); });
+  document.querySelectorAll('[data-rename-cat]').forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); renameCat(b.dataset.renameCat); });
+  document.querySelectorAll('[data-del-cat]').forEach(b => b.onclick = e => { e.preventDefault(); e.stopPropagation(); delCat(b.dataset.delCat); });
+
+  // 拖拽排序
+  document.querySelectorAll('.site').forEach(card => {
+    card.addEventListener('dragstart', e => {
+      card.classList.add('dragging');
+      e.dataTransfer.setData('text/plain', card.dataset.idx);
+      e.dataTransfer.effectAllowed = 'move';
+    });
+    card.addEventListener('dragend', () => card.classList.remove('dragging'));
+    card.addEventListener('dragover', e => {
+      e.preventDefault();
+      const dragging = document.querySelector('.dragging');
+      if (dragging && dragging !== card) card.classList.add('drag-over');
+    });
+    card.addEventListener('dragleave', () => card.classList.remove('drag-over'));
+    card.addEventListener('drop', e => {
+      e.preventDefault();
+      card.classList.remove('drag-over');
+      const from = +e.dataTransfer.getData('text/plain');
+      const to = +card.dataset.idx;
+      if (from === to || isNaN(from) || isNaN(to)) return;
+      const [moved] = sites.splice(from, 1);
+      sites.splice(to, 0, moved);
+      save(LS_SITES, sites);
+      render();
+    });
+  });
+}
+
+/* ================= 搜索 ================= */
+const ENGINE_URLS = {
+  bing:   'https://cn.bing.com/search?q=',
+  baidu:  'https://www.baidu.com/s?wd=',
+  github: 'https://github.com/search?q=',
+};
+let engine = 'bing';
+document.querySelectorAll('#engineTabs span').forEach(el => el.onclick = () => {
+  engine = el.dataset.e;
+  document.querySelectorAll('#engineTabs span').forEach(x => x.classList.toggle('active', x === el));
+});
+function doSearch() {
+  const q = $('#searchInput').value.trim();
+  if (!q) return;
+  // 如果输入像网址，直接跳转
+  if (/^https?:\/\//.test(q) || /^[\w-]+\.[a-z]{2,}(\/\S*)?$/i.test(q)) {
+    window.open(q.startsWith('http') ? q : 'https://' + q, '_blank'); return;
+  }
+  window.open(ENGINE_URLS[engine] + encodeURIComponent(q), '_blank');
+}
+$('#searchBtn').onclick = doSearch;
+$('#searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') doSearch(); });
+$('#searchInput').addEventListener('input', e => {
+  filterText = e.target.value;
+  render();
+});
+
+/* ================= 站点增删改 ================= */
+function fillCatSelect() {
+  $('#fCat').innerHTML = cats.map(c => `<option value="${esc(c)}">${esc(c)}</option>`).join('');
+}
+function openSiteModal(idx = -1) {
+  editIndex = idx;
+  fillCatSelect();
+  if (idx >= 0) {
+    const s = sites[idx];
+    $('#siteModalTitle').textContent = '编辑网站';
+    $('#fName').value = s.name; $('#fUrl').value = s.url;
+    $('#fDesc').value = s.desc || ''; $('#fIcon').value = s.icon || '';
+    $('#fCat').value = s.cat;
+  } else {
+    $('#siteModalTitle').textContent = '添加网站';
+    $('#fName').value = ''; $('#fUrl').value = ''; $('#fDesc').value = ''; $('#fIcon').value = '';
+    if (activeCat !== '全部') $('#fCat').value = activeCat;
+  }
+  $('#siteModal').classList.add('show');
+  setTimeout(() => $('#fName').focus(), 50);
+}
+$('#addSiteBtn').onclick = () => openSiteModal(-1);
+$('#saveSiteBtn').onclick = () => {
+  const name = $('#fName').value.trim();
+  let url = $('#fUrl').value.trim();
+  if (!name || !url) { toast('名称和网址不能为空'); return; }
+  if (!/^https?:\/\//i.test(url)) url = 'https://' + url;
+  const data = {
+    name, url,
+    desc: $('#fDesc').value.trim(),
+    cat: $('#fCat').value,
+    icon: $('#fIcon').value.trim(),
+  };
+  if (editIndex >= 0) sites[editIndex] = data; else sites.push(data);
+  save(LS_SITES, sites);
+  $('#siteModal').classList.remove('show');
+  render();
+  toast(editIndex >= 0 ? '已更新' : '已添加');
+};
+
+function delSite(i) {
+  if (!confirm(`确定删除「${sites[i].name}」吗？`)) return;
+  sites.splice(i, 1);
+  save(LS_SITES, sites);
+  render();
+  toast('已删除');
+}
+
+/* ================= 分类管理 ================= */
+$('#addCatBtn').onclick = () => {
+  const name = prompt('请输入新分类名称：');
+  if (!name || !name.trim()) return;
+  const n = name.trim();
+  if (cats.includes(n)) { toast('分类已存在'); return; }
+  cats.push(n); save(LS_CATS, cats);
+  activeCat = n;
+  render(); toast('分类已创建');
+};
+
+function renameCat(oldName) {
+  const n = prompt('新的分类名称：', oldName);
+  if (!n || !n.trim() || n.trim() === oldName) return;
+  const name = n.trim();
+  if (cats.includes(name)) { toast('该分类已存在'); return; }
+  cats = cats.map(c => c === oldName ? name : c);
+  sites.forEach(s => { if (s.cat === oldName) s.cat = name; });
+  if (activeCat === oldName) activeCat = name;
+  save(LS_CATS, cats); save(LS_SITES, sites);
+  render(); toast('分类已重命名');
+}
+
+function delCat(catName) {
+  const count = sites.filter(s => s.cat === catName).length;
+  const msg = count > 0
+    ? `分类「${catName}」下有 ${count} 个网站，删除后它们将移入其他分类，确定吗？`
+    : `确定删除空分类「${catName}」吗？`;
+  if (!confirm(msg)) return;
+  const target = cats.find(c => c !== catName);
+  if (count > 0 && target) sites.forEach(s => { if (s.cat === catName) s.cat = target; });
+  cats = cats.filter(c => c !== catName);
+  if (activeCat === catName) activeCat = '全部';
+  save(LS_CATS, cats); save(LS_SITES, sites);
+  render(); toast('分类已删除');
+}
+
+/* ================= 设置 / 导入导出 ================= */
+$('#menuBtn').onclick = () => $('#setModal').classList.add('show');
+$('#exportBtn').onclick = () => {
+  const blob = new Blob([JSON.stringify({ sites, cats }, null, 2)], { type: 'application/json' });
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(blob);
+  a.download = 'navhub-backup-' + new Date().toISOString().slice(0, 10) + '.json';
+  a.click(); URL.revokeObjectURL(a.href);
+};
+$('#importBtn').onclick = () => $('#importFile').click();
+$('#importFile').addEventListener('change', e => {
+  const file = e.target.files[0]; if (!file) return;
+  const r = new FileReader();
+  r.onload = () => {
+    try {
+      const d = JSON.parse(r.result);
+      if (Array.isArray(d.sites)) { sites = d.sites; save(LS_SITES, sites); }
+      if (Array.isArray(d.cats) && d.cats.length) { cats = d.cats; save(LS_CATS, cats); }
+      render(); toast('导入成功'); $('#setModal').classList.remove('show');
+    } catch(err) { toast('文件格式错误'); }
+  };
+  r.readAsText(file);
+  e.target.value = '';
+});
+$('#resetBtn').onclick = () => {
+  if (!confirm('恢复默认将清除所有自定义数据，确定吗？')) return;
+  sites = DEFAULT_SITES.slice(); cats = DEFAULT_CATS.slice();
+  save(LS_SITES, sites); save(LS_CATS, cats);
+  render(); toast('已恢复默认'); $('#setModal').classList.remove('show');
+};
+
+/* ================= 主题 ================= */
+function applyTheme(t) {
+  document.documentElement.dataset.theme = t;
+  $('#themeBtn').textContent = t === 'dark' ? '☀️' : '🌙';
+  localStorage.setItem(LS_THEME, t);
+}
+$('#themeBtn').onclick = () => applyTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark');
+applyTheme(localStorage.getItem(LS_THEME) || (matchMedia('(prefers-color-scheme: dark)').matches ? 'dark' : 'light'));
+
+/* ================= 时钟问候 ================= */
+function tick() {
+  const now = new Date();
+  const h = now.getHours();
+  const greet = h < 5 ? '夜深了，注意休息 🌙' : h < 9 ? '早上好，新的一天 ☀️' : h < 12 ? '上午好 ☕'
+    : h < 14 ? '中午好 🍱' : h < 18 ? '下午好 🍵' : h < 23 ? '晚上好 🌆' : '夜深了，注意休息 🌙';
+  $('#greeting').textContent = greet;
+  const w = ['日','一','二','三','四','五','六'][now.getDay()];
+  $('#clock').innerHTML = now.toLocaleTimeString('zh-CN', { hour12: false })
+    + `<small>${now.getMonth()+1}月${now.getDate()}日 周${w}</small>`;
+}
+tick(); setInterval(tick, 1000);
+
+/* ================= 弹窗通用 ================= */
+document.querySelectorAll('.modal-mask').forEach(m => {
+  m.addEventListener('click', e => { if (e.target === m) m.classList.remove('show'); });
+  m.querySelectorAll('[data-close]').forEach(b => b.onclick = () => m.classList.remove('show'));
+});
+document.addEventListener('keydown', e => {
+  if (e.key === 'Escape') document.querySelectorAll('.modal-mask.show').forEach(m => m.classList.remove('show'));
+  // 按 "/" 快速聚焦搜索框
+  if (e.key === '/' && document.activeElement !== $('#searchInput') && !document.querySelector('.modal-mask.show')) {
+    e.preventDefault(); $('#searchInput').focus();
+  }
+});
+
+/* ================= 浏览器信息 ================= */
+function detectBrowser(ua) {
+  if (/Edg\//.test(ua))            return { name: 'Edge',        ver: (ua.match(/Edg\/([\d.]+)/)||[])[1] };
+  if (/MicroMessenger/i.test(ua))  return { name: '微信内置浏览器', ver: (ua.match(/MicroMessenger\/([\d.]+)/)||[])[1] };
+  if (/QQBrowser/i.test(ua))       return { name: 'QQ浏览器',     ver: (ua.match(/QQBrowser\/([\d.]+)/)||[])[1] };
+  if (/UCBrowser/i.test(ua))       return { name: 'UC浏览器',     ver: (ua.match(/UCBrowser\/([\d.]+)/)||[])[1] };
+  if (/2345Explorer/i.test(ua))    return { name: '2345浏览器',   ver: (ua.match(/2345Explorer\/([\d.]+)/)||[])[1] };
+  if (/MetaSr|SE /i.test(ua))      return { name: '搜狗浏览器',   ver: '' };
+  if (/Firefox\//.test(ua))        return { name: 'Firefox',     ver: (ua.match(/Firefox\/([\d.]+)/)||[])[1] };
+  if (/Chrome\//.test(ua))         return { name: 'Chrome',      ver: (ua.match(/Chrome\/([\d.]+)/)||[])[1] };
+  if (/Safari\//.test(ua))         return { name: 'Safari',      ver: (ua.match(/Version\/([\d.]+)/)||[])[1] };
+  return { name: '未知浏览器', ver: '' };
+}
+(function showBrowserInfo() {
+  const ua = navigator.userAgent;
+  const b = detectBrowser(ua);
+  $('#footer').textContent = `NavHub V1.3 · 当前环境：${b.name} · ${detectOS(ua)} · 数据保存在浏览器本地 · 部署于 GitHub Pages`;
+})();
+
+function detectOS(ua) {
+  if (/Windows NT 10/.test(ua)) return 'Windows 10/11';
+  if (/Windows/.test(ua))       return 'Windows';
+  if (/Android/.test(ua))       return 'Android ' + ((ua.match(/Android ([\d.]+)/)||[])[1] || '');
+  if (/iPhone|iPad|iPod/.test(ua)) return 'iOS ' + ((ua.match(/OS ([\d_]+)/)||[])[1] || '').replace(/_/g, '.');
+  if (/Mac OS X/.test(ua))      return 'macOS';
+  if (/Linux/.test(ua))         return 'Linux';
+  return '未知系统';
+}
+function detectEngine(browser) {
+  if (['Chrome', 'Edge', 'QQ浏览器', 'UC浏览器', '2345浏览器', '微信内置浏览器'].includes(browser)) return 'Blink (Chromium)';
+  if (browser === 'Firefox') return 'Gecko';
+  if (browser === 'Safari') return 'WebKit';
+  return '未知';
+}
+
+$('#infoBtn').onclick = () => {
+  const ua = navigator.userAgent;
+  const b = detectBrowser(ua);
+  const mem = navigator.deviceMemory ? navigator.deviceMemory + ' GB（近似）' : '不可用';
+  const conn = navigator.onLine ? '在线 🟢' : '离线 🔴';
+  let tz = '未知';
+  try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone; } catch(e) {}
+  const rows = [
+    ['浏览器', b.name + (b.ver ? ' ' + b.ver.split('.').slice(0, 2).join('.') : '')],
+    ['浏览器完整版本', b.ver || '未知'],
+    ['渲染内核', detectEngine(b.name)],
+    ['操作系统', detectOS(ua)],
+    ['语言', navigator.language],
+    ['时区', tz],
+    ['屏幕分辨率', `${screen.width} × ${screen.height} 像素`],
+    ['窗口大小', `${window.innerWidth} × ${window.innerHeight} 像素`],
+    ['设备像素比', '×' + window.devicePixelRatio],
+    ['CPU 线程数', navigator.hardwareConcurrency || '不可用'],
+    ['设备内存', mem],
+    ['网络状态', conn],
+    ['Cookie', navigator.cookieEnabled ? '已启用' : '已禁用'],
+    ['User-Agent', ua],
+  ];
+  $('#infoList').innerHTML = rows.map(([k, v], i) =>
+    `<div class="info-row${i === rows.length - 1 ? ' wide' : ''}"><span class="k">${esc(k)}</span><span class="v">${esc(v)}</span></div>`).join('');
+  $('#infoModal').classList.add('show');
+};
+
+
+render();
+</script>
 </body>
 </html>
